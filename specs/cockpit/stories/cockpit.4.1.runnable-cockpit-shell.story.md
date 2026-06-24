@@ -16,7 +16,7 @@ inputs:
 
 # Story 4.1: Minimal runnable cockpit — localhost browser shell over the Phase 1 pack
 
-Status: in-progress
+Status: done (QA APPROVED 2026-06-24)
 
 > First slice of Epic 4 (Phase 2). Goal: something the ST can actually OPEN IN A BROWSER
 > and click, instead of reading a markdown file. Read-only views only; the
