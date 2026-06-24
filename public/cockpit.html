@@ -292,12 +292,19 @@ function renderBrief(){
     col.curated.forEach(d=>cw+='<li>'+esc(d.note)+'</li>');
     cw += '</ul></div>';
   }
+  const npcs = c.npcs||[];
+  let npcBlock = '';
+  if(npcs.length){
+    npcBlock = '<div class="bsec">Known NPCs ('+npcs.length+')</div><div class="facts">'
+      + npcs.map(n=>'<div class="fact">'+esc(n.name)+(n.isCorrespondent?' <span class="prov">(correspondent)</span>':'')+'</div>').join('')
+      + '</div>';
+  }
   const fs = c.dossierFacts||[];
   let facts = '<div class="bsec">Dossier facts'+(fs.length?' ('+fs.length+')':'')+'</div>';
   facts += fs.length
     ? '<div class="facts">'+fs.map(f=>'<div class="fact"><span class="k">'+esc(f.tag)+'</span>'+esc(f.value)+' <span class="prov">('+esc(f.source)+')</span></div>').join('')+'</div>'
     : '<div class="loading">No dossier facts on record.</div>';
-  return roster + '<div class="brief-card"><div class="bname">'+esc(c.displayName)+aka+'</div>'+identity+cw+facts+'</div>';
+  return roster + '<div class="brief-card"><div class="bname">'+esc(c.displayName)+aka+'</div>'+identity+cw+npcBlock+facts+'</div>';
 }
 
 // --- Draft: context-assembler (Story 4.4) ---
@@ -314,6 +321,8 @@ function briefText(c){
   if(col.groups.length||col.curated.length){ L.push('Distinct from (do not merge):');
     col.groups.forEach(g=>L.push('  - "'+g.forename+'": '+g.members.map(m=>m.displayName).join('; ')));
     col.curated.forEach(d=>L.push('  - '+d.note)); }
+  const npcs=c.npcs||[];
+  if(npcs.length){ L.push('Known NPCs:'); npcs.forEach(n=>L.push('  - '+n.name+(n.isCorrespondent?' (correspondent)':''))); }
   const fs=c.dossierFacts||[];
   if(fs.length){ L.push('Dossier facts:'); fs.forEach(f=>L.push('  - '+f.tag+': '+f.value+' ('+f.source+')')); }
   return L.join('\n');
