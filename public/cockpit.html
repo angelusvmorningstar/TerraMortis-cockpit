@@ -97,6 +97,22 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
 .gcard .gv{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--gold2);line-height:1;}
 .gcard .gl{font-family:var(--fl);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--label-tertiary);margin-top:6px;}
 .dash-block{margin-bottom:26px;}
+
+/* Brief panel */
+.roster{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.chip{font-family:var(--fl);font-weight:700;font-size:.72rem;padding:5px 11px;border-radius:13px;background:var(--surf);border:1px solid var(--bdr2);color:var(--txt2);cursor:pointer;}
+.chip:hover{background:var(--gold-a12);}
+.chip.active{background:var(--crim-a8);border-color:var(--crim-a40);color:var(--crim);}
+.brief-card{background:var(--surf1);border:1px solid var(--bdr);border-radius:8px;padding:16px 18px;}
+.brief-card .bname{font-family:var(--fh);font-weight:700;font-size:1.2rem;color:var(--txt);}
+.brief-card .blegal{font-weight:400;font-size:.92rem;color:var(--txt3);font-style:italic;}
+.bgrid{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+.bfact{display:flex;gap:10px;font-size:.86rem;}
+.bfact .k{flex:0 0 110px;font-family:var(--fl);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--rp-txt3);padding-top:3px;}
+.bfact .v{flex:1;color:var(--rp-txt);}
+.prov{font-size:.66rem;color:var(--rp-txt3);font-style:italic;}
+.gap{display:inline-block;font-family:var(--fl);font-size:.7rem;font-weight:700;color:var(--warn-orange);background:var(--warn-orange-bg);border:1px solid var(--warn-orange-bdr);border-radius:4px;padding:1px 7px;}
+.bsec{font-family:var(--fl);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--label-tertiary);margin:16px 0 6px;}
 </style>
 </head>
 <body>
@@ -109,6 +125,7 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
     <div class="sidebar-nav" id="nav">
       <button class="sidebar-btn on" data-view="dashboard">Dashboard</button>
       <button class="sidebar-btn" data-view="index">Character Index</button>
+      <button class="sidebar-btn" data-view="brief">Character Brief</button>
       <button class="sidebar-btn" data-view="glossary">Glossary</button>
       <button class="sidebar-btn" data-view="channel">Channel Rules</button>
       <button class="sidebar-btn" data-view="rules">Codified Rules</button>
@@ -229,11 +246,55 @@ function renderDashboard(){
        + '<div class="dash-block"><div class="dash-secn">Pack at a glance</div>'+glance+'</div>';
 }
 
-const TITLES = {dashboard:'Dashboard',index:'Character Index',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
+// --- Character Brief (Story 4.3) ---
+const CHAR_KEY = 'tm_cockpit_char';
+function selectedCharId(){ return localStorage.getItem(CHAR_KEY) || null; }
+function setChar(id){ localStorage.setItem(CHAR_KEY, id); render(); }
+function nameTokens(c){ return new Set([c.displayName,c.legalName,c.sortName].filter(Boolean).map(x=>String(x).toLowerCase())); }
+function collisionsFor(c){
+  // Matches on exact name tokens (displayName/legalName/sortName). This couples to the
+  // /api/pack-data shape: if collision member displayNames ever diverge from character
+  // displayNames (e.g. title prefixes stripped on one side), group matches would silently
+  // stop firing. Keep the two render paths consistent, or match on id, if that shape changes.
+  const t = nameTokens(c);
+  const curated = (DATA.collisions.curated||[]).filter(d=>(d.names||[]).some(n=>t.has(String(n).toLowerCase())));
+  const groups = (DATA.collisions.collisions||[]).filter(g=>(g.members||[]).some(m=>t.has(String(m.displayName).toLowerCase())));
+  return {curated, groups};
+}
+function idRow(label,val){ const none=!val||val==='[none on record]';
+  return '<div class="bfact"><span class="k">'+label+'</span><span class="v">'+(none?'<span class="gap">none on record</span>':esc(val)+' <span class="prov">(sheet)</span>')+'</span></div>'; }
+function gapRow(label,note){ return '<div class="bfact"><span class="k">'+label+'</span><span class="v"><span class="gap">none on record</span> &nbsp;'+esc(note)+'</span></div>'; }
+function renderBrief(){
+  const chars = (DATA.index.characters||[]).slice().sort((a,b)=>String(a.sortName||a.displayName).localeCompare(String(b.sortName||b.displayName)));
+  const sel = selectedCharId();
+  const c = chars.find(x=>x.id===sel) || null;
+  const roster = '<div class="roster">' + chars.map(x=>'<span class="chip'+(c&&x.id===c.id?' active':'')+'" data-char="'+esc(x.id)+'">'+esc(x.sortName||x.displayName)+'</span>').join('') + '</div>';
+  if(!c) return roster + '<div class="loading">Select a character to see their grounded brief.</div>';
+  const aka = c.legalName && c.legalName!==c.sortName ? ' <span class="blegal">('+esc(c.legalName)+')</span>' : '';
+  const identity = '<div class="bgrid">' + idRow('Clan',c.clan)+idRow('Covenant',c.covenant)+idRow('Bloodline',c.bloodline)+idRow('Court title',c.courtTitle)
+    + gapRow('Travel','do not infer from haven') + gapRow('Prior letters','none validated this cycle') + '</div>';
+  const col = collisionsFor(c);
+  let cw='';
+  if(col.curated.length || col.groups.length){
+    cw = '<div class="warn-collide"><b>&#9888; Distinct from &mdash; do not merge</b><ul>';
+    col.groups.forEach(g=>cw+='<li>"'+esc(g.forename)+'" &mdash; '+g.members.map(m=>esc(m.displayName)).join('; ')+'</li>');
+    col.curated.forEach(d=>cw+='<li>'+esc(d.note)+'</li>');
+    cw += '</ul></div>';
+  }
+  const fs = c.dossierFacts||[];
+  let facts = '<div class="bsec">Dossier facts'+(fs.length?' ('+fs.length+')':'')+'</div>';
+  facts += fs.length
+    ? '<div class="facts">'+fs.map(f=>'<div class="fact"><span class="k">'+esc(f.tag)+'</span>'+esc(f.value)+' <span class="prov">('+esc(f.source)+')</span></div>').join('')+'</div>'
+    : '<div class="loading">No dossier facts on record.</div>';
+  return roster + '<div class="brief-card"><div class="bname">'+esc(c.displayName)+aka+'</div>'+identity+cw+facts+'</div>';
+}
+
+const TITLES = {dashboard:'Dashboard',index:'Character Index',brief:'Character Brief',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
 function count() {
   if(VIEW==='dashboard') return 'Phase ' + (currentPhase()+1) + ' of ' + PHASES.length;
   if(!DATA) return '';
   if(VIEW==='index') return (DATA.index.characters||[]).length + ' characters';
+  if(VIEW==='brief'){ const c=(DATA.index.characters||[]).find(x=>x.id===selectedCharId()); return c?(c.sortName||c.displayName):'pick a character'; }
   if(VIEW==='glossary') return ((DATA.glossary.entries||[]).length||0) + ' terms';
   if(VIEW==='channel') return ((DATA.channelRules.channels||[]).length||0) + ' channels';
   if(VIEW==='rules') return ((DATA.rules.rules||[]).length||0) + ' rules';
@@ -246,7 +307,7 @@ function render() {
   // Dashboard's ribbon is static and renders even before the pack data arrives.
   if(VIEW==='dashboard'){ document.getElementById('view').innerHTML = renderDashboard(); return; }
   if(!DATA) return;
-  const fn = {index:renderIndex,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
+  const fn = {index:renderIndex,brief:renderBrief,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
   document.getElementById('view').innerHTML = fn();
 }
 
@@ -258,8 +319,10 @@ document.getElementById('nav').addEventListener('click', (e) => {
 document.getElementById('regen').addEventListener('click', load);
 // Ribbon: click a phase to set current (persisted in localStorage).
 document.getElementById('content').addEventListener('click', (e) => {
-  const seg = e.target.closest('.phase-seg'); if(!seg) return;
-  setPhase(parseInt(seg.dataset.phase, 10));
+  const seg = e.target.closest('.phase-seg');
+  if(seg){ setPhase(parseInt(seg.dataset.phase, 10)); return; }
+  const chip = e.target.closest('.chip[data-char]');
+  if(chip){ setChar(chip.dataset.char); return; }
 });
 render();   // paint the dashboard ribbon immediately
 load();     // then fetch pack data for the glance + other views

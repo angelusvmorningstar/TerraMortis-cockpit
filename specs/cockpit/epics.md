@@ -92,9 +92,34 @@ The ST can generate a pasteable drafting pack — the Character Index (projectio
 The ST runs one real downtime cycle through the pack and measures the fabrication drop against the baseline of fifteen — the MVP's success proof.
 **FRs covered:** FR31, FR32
 
-### Epic 4 (Phase 2, future — named only, not storied)
-The localhost cockpit: `assembleContext` service, the two structural slot-guards (no haven→travel; validated-letter-only), correspondence retrieval, sandbox NPC/`sire` capture, and migration-script handoff to Peter.
+### Epic 4 (Phase 2) — the localhost cockpit
+The runnable browser cockpit over the Phase 1 engine.
 **FRs covered:** FR15-28
+
+**Architecture decision (2026-06-24):** the cockpit is a **context-assembler**, not an
+in-app LLM caller. It prepares a grounded, copy-ready prompt (brief + submission + standing
+instruction + slot-guards) that the ST runs in their own AI. No API key, no model cost,
+read-only — matches the proven Phase 1 paste workflow.
+
+**Stories (storied 2026-06-24):**
+- **4.1 — Runnable cockpit shell** ✅ done. Localhost server + read-only views (Index,
+  Glossary, Channel Rules, Codified Rules, Raw Pack) over a shared composition path.
+- **4.2 — Dashboard + game-cycle ribbon** ✅ done. Default landing; 8-phase ribbon
+  (click-to-set, localStorage) + at-a-glance strip.
+- **4.3 — Grounded brief panel.** Pick a character → their grounded brief: identity facts
+  with provenance, dossier facts, "distinct from" collision notes, and explicit gap fields
+  (travel / prior letters = none on record, do not infer). (FR14, FR26, FR20.)
+- **4.4 — Submission intake → assembled drafting prompt.** Paste a submission for the
+  selected character; assemble a copy-ready grounded prompt (brief + submission + standing
+  instruction + slot-guard text). (FR26-28.)
+- **4.5 — Structural slot-guards.** Enforce in code: a haven never fills a travel slot; a
+  "prior letter" only from a validated correspondence record. (FR17, FR18.)
+- **4.6 — Correspondence retrieval.** Surface validated letters so letter drafts answer
+  from real text. (FR18, FR26-28.)
+- **4.7 — Sandbox NPC + sire capture.** Richer identity grounding; addresses the
+  thin-dossier / NPC live-run findings. (FR19, FR21.)
+- **4.8 — Confidence labelling + exclude ST-hidden facts.** (FR15, FR16.)
+- **4.9 — Migration scripts + Peter reconciliation handoff.** (FR23-25.)
 
 ### Epic 5 (Vision, future — named only, not storied)
 The living city: in-cockpit drafting with staged-change review, `city_events`, the chronicle map, and faction state/clocks.
