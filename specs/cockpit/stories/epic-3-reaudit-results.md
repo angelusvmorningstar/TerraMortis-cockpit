@@ -4,12 +4,22 @@
 - **Method:** `scripts/re-audit-template.md` — blind drafter (pack + raw input only, audit unseen) graded by the informed grader (ST + audit answer key).
 - **Date:** 2026-06-24. Drafters: Opus, fresh context, pack-only.
 
-## Headline
+> ⚠ **QA: CHANGES REQUESTED (Quinn, 2026-06-24).** This headline is DISPUTED pending
+> rework — see the QA Review in `cockpit.3.1.validate-grounding.story.md`. Specifically:
+> "after 0" overclaims against a self-described-incomplete baseline (restate as "13/13
+> named instances did not recur"); instance 13 is a generous "prevented" and should be
+> "stated-the-gap (partial)" → tally 9 prevented / 4 gap; blindness was instruction-only
+> (not sandboxed) and the verbatim drafts were not retained, so the grade is not yet
+> independently auditable. A separate blocking defect was also found: the pack leaks 18
+> haven addresses (NFR2 privacy violation). Treat the numbers below as provisional.
 
-**Before 15 → after 0 fabrications in the addressed classes.** All 13 named audited
-instances were caught: **10 prevented** (the pack carried the fact and the blind draft
-used it) and **3 converted to correctly-stated gaps** (the pack lacked the field and the
-standing instruction stopped the invention). **0 still-fabricated.**
+## Headline (provisional — see QA caveat above)
+
+**Of the 13 named audited instances, 0 recurred through one blind pass.** Recorded as
+**10 prevented + 3 stated-the-gap** (QA disputes instance 13 → likely 9 + 4). This shows
+the pack CAN prevent the audited recurrences; it does not yet support a general "after 0"
+or a reliability ("prevents") claim. Baseline "15" is the PRD reference figure and is
+itself an acknowledged under-count.
 
 ## Verdict table (all 13 named instances)
 

@@ -3,7 +3,7 @@ epic: 3
 story: 3.1
 story_key: cockpit.3.1.validate-grounding
 title: Re-audit a grounded cycle and record the fabrication drop
-status: review
+status: in-progress
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 3.1: Re-audit a grounded cycle and record the fabrication drop
 
-Status: review
+Status: in-progress
 
 > SM-drafted 2026-06-24 (cockpit convention; not the suite `_bmad` flow). Ready for dev on Angelus's go. This is Epic 3 — the Phase 1 MVP success proof. The generator (Epics 1-2) is done and proven; this story takes the actual reading.
 
@@ -87,10 +87,25 @@ Re-draft the **already-audited material**, not a fresh live cycle. The audit *is
 - 2026-06-24: Story drafted (SM, cockpit convention). Critical-path prerequisite #1 (source inputs for DT1/3/4) confirmed present and text-readable. Awaiting dev go-ahead.
 - 2026-06-24: Dev started (status todo→in-progress). Verified pack coverage against the audit: instances 4/7/5/13 directly grounded (expect prevented), instances 1/3/2 lack the field (state-the-gap tests). Wrote `scripts/re-audit-template.md` with the blind-drafter/informed-grader design and per-instance matrix.
 - 2026-06-24: First blind trial — instance 4 (Astrid/Odeliese/Elise). Found + recorded the clean-input rule (raw `responses` only; strip `*_resolved`/`st_*`/`*_review`; never source from processed outcomes docs). Blind Opus drafter, pack-only, kept all three distinct and stated "Odeliese not in Elise". **Verdict: prevented.** Recorded in `epic-3-reaudit-results.md`. Running: 1 tested / 1 prevented.
-- 2026-06-24: Ran the remaining 12 instances (4 parallel blind Opus trials). **All caught: 13/13, 0 fabricated** (10 prevented, 3 stated-the-gap). Before 15 → after 0. State-the-gap held on the no-data cases (1/2/3) without Phase-2 fields. Logged the discipline-territory placeholder + the Charles "Gorgon" collision-note nit. Dev complete → status `in-progress → review`. Next: QA (Quinn).
+- 2026-06-24: Ran the remaining 12 instances (4 parallel blind Opus trials). All 13 named instances did not recur (10 prevented, 3 stated-the-gap) on one blind pass. Dev marked complete → `review`. Next: QA.
+- 2026-06-24: **QA (Quinn) — CHANGES REQUESTED.** Status `review → in-progress`. 4 blocking: blindness instruction-only not sandboxed; verbatim drafts not retained (grade unauditable); "after 0" overclaims; instance-13 verdict generous (→ 9 prevented / 4 gap). Non-blocking: softballed state-the-gap, undisclosed prompts, n=1. **NEW separate defect: NFR2 — pack leaks 18 haven addresses; raised as Story 2.7 (blocking, pack unsafe to paste as generated).** Results headline annotated as provisional/disputed. Rework pending user direction.
 
-## QA Review
-_(pending — runs after dev per the loop: dev-story → QA → done)_
+## QA Review (Quinn) — 2026-06-24
+
+**Verdict: CHANGES REQUESTED.** Right intent (blind-drafter/informed-grader split), but the artefacts do not back the headline. Independent review (Opus, adversarial) — full review in the dev's hand-off; blocking items:
+
+1. **[blocking] Blindness rests on instruction, not isolation.** Drafters were subagents with file-read tools pointed at the live repo; `Downtime_Hallucination_Audit.md` (the answer key) sits in the SAME directory as the source files they were told to read. Blindness is asserted, not demonstrated. → Re-run in a sandbox/worktree that physically excludes the audit + all `*_resolved`/outcomes docs, OR attach each drafter's tool-call log proving it never read the audit. (Mitigant on record: trials used 2 tool-calls each, consistent with reading only the pack — but not proof.)
+2. **[blocking] No drafter output retained.** Method step 4 says capture verbatim output; the results file kept only one-line verdicts. The grade is unauditable — the independence the method was built for collapses. → Attach the 5 verbatim drafts with the trap sentence highlighted.
+3. **[blocking] "after 0" overclaims.** The audit self-describes as an under-count (13 named; 8-12 only partially verified; "15" is a PRD round-up). → Restate as "13/13 named instances did not recur (prevented/gap-stated) against a self-described-incomplete baseline." Drop bare "after 0".
+4. **[blocking] Instance 13 verdict generous.** The original failure was declare-absent THEN fabricate; a draft saying "rows not in pack" reproduces the declare-absent half. → Reclassify #13 as stated-the-gap (partial) → tally becomes 9 prevented / 4 gap, not 10 / 3.
+5. **[non-blocking] State-the-gap (1/2/3) softballed.** Drafter was told "no X provided", removing the tempting partial datum that originally seduced the model. → Re-run "hard mode": supply the real partial datum (the Drummoyne shared haven IS in the pack) + a texture-rewarding prompt.
+6. **[non-blocking] Drafter prompts not disclosed** — record exact prompts; they must pose the natural drafting task, never name the trap.
+7. **[non-blocking] n=1 per instance, single pack** — run ≥3 passes on the conflation/identity traps, or downgrade "prevents" to "prevented recurrence in a single pass". Optional Sonnet pass not run.
+
+**Plus a defect QA surfaced beyond the re-audit:**
+8. **[blocking — NEW DEFECT, separate story] NFR2 privacy violation.** The pack contains 18 real haven addresses (full street addresses, a realestate.com link, Charlie Ballsack's tracker-evasion note). NFR2 requires haven PII excluded. The Character Index projection (Story 2.2) is leaking the `haven` dossier field — the pack is NOT safe to paste into an external AI as generated. Needs its own fix story; arguably the highest-priority finding in this cycle.
+
+**To reach APPROVE:** close 1-4, fix the NFR2 leak (8). Items 5-7 are the difference between "honest Phase-1 evidence" and "robust prevention claim".
 
 ## Testing
 No test framework. Validation is the re-audit itself: the recorded before/after fabrication count is the story's own proof.
