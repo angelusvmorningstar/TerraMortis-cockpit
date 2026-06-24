@@ -71,6 +71,32 @@ body{background:var(--bg);color:var(--txt);font-family:var(--ft);font-size:14px;
 pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8px;padding:16px 18px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--rp-txt);line-height:1.5;}
 .loading{color:var(--txt3);font-style:italic;padding:20px 0;}
 .err{color:var(--crim);background:var(--crim-a8);border:1px solid var(--crim-a25);border-radius:6px;padding:12px 14px;}
+
+/* Dashboard — game-cycle ribbon */
+.dash-secn{font-family:var(--fl);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--label-tertiary);margin:6px 0 12px;}
+.ribbon{display:flex;gap:0;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;background:var(--surf1);}
+.phase-seg{flex:1;min-width:0;position:relative;padding:14px 12px 14px 26px;cursor:pointer;background:var(--surf1);border-right:1px solid var(--bdr);color:var(--txt3);transition:background .12s;}
+.phase-seg:last-child{border-right:none;}
+.phase-seg:hover{background:var(--surf2);}
+.phase-seg .pnum{font-family:var(--fl);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--label-tertiary);}
+.phase-seg .pname{font-family:var(--fh);font-size:.82rem;font-weight:600;color:var(--txt2);margin-top:2px;line-height:1.2;}
+/* chevron join */
+.phase-seg::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:0;}
+.phase-seg.done{background:var(--gold-a8);color:var(--gold2);}
+.phase-seg.done .pname{color:var(--gold2);}
+.phase-seg.done .pnum::after{content:' \2713';color:var(--green);}
+.phase-seg.current{background:var(--crim);}
+.phase-seg.current .pnum{color:rgba(244,239,228,.75);}
+.phase-seg.current .pname{color:var(--txt-on-dark);}
+.phase-caption{margin-top:14px;padding:14px 16px;background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8px;}
+.phase-caption .ct{font-family:var(--fh);font-weight:700;color:var(--crim);font-size:1.02rem;}
+.phase-caption .cd{margin-top:5px;color:var(--rp-txt);}
+.phase-caption .hint{margin-top:8px;font-size:.72rem;color:var(--rp-txt3);font-style:italic;}
+.glance{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;}
+.gcard{flex:1;min-width:120px;background:var(--surf1);border:1px solid var(--bdr);border-radius:8px;padding:14px 16px;}
+.gcard .gv{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--gold2);line-height:1;}
+.gcard .gl{font-family:var(--fl);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--label-tertiary);margin-top:6px;}
+.dash-block{margin-bottom:26px;}
 </style>
 </head>
 <body>
@@ -81,7 +107,8 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
       <div class="sidebar-sub">ST Cockpit</div>
     </div>
     <div class="sidebar-nav" id="nav">
-      <button class="sidebar-btn on" data-view="index">Character Index</button>
+      <button class="sidebar-btn on" data-view="dashboard">Dashboard</button>
+      <button class="sidebar-btn" data-view="index">Character Index</button>
       <button class="sidebar-btn" data-view="glossary">Glossary</button>
       <button class="sidebar-btn" data-view="channel">Channel Rules</button>
       <button class="sidebar-btn" data-view="rules">Codified Rules</button>
@@ -107,13 +134,29 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
 </div>
 <script>
 let DATA = null;
-let VIEW = 'index';
+let VIEW = 'dashboard';
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+// The eight canonical game-cycle phases (reference_game_cycle).
+const PHASES = [
+  {n:'Cycle Opens',  d:'Feeding panel and pre-sign-in open; feeding is primed from the previous downtime.'},
+  {n:'Pre-Game',     d:'Players sign in and pay ahead of time, to get the session started promptly.'},
+  {n:'Game',         d:'The session runs.'},
+  {n:'Game Closes',  d:'Regency panel opens; Regents confirm feeding rights for the new cycle.'},
+  {n:'Downtimes Open',d:'The feeding gate lifts once all Regents confirm; players submit downtime forms.'},
+  {n:'Downtimes Close',d:'Submissions are in; STs begin processing.'},
+  {n:'ST Processing',d:'STs validate and resolve the downtimes.'},
+  {n:'Push Cycle',   d:'Approvals released and feeding reopened; the loop returns to Cycle Opens.'},
+];
+const PHASE_KEY = 'tm_cockpit_phase';
+function currentPhase(){ const v = parseInt(localStorage.getItem(PHASE_KEY), 10); return Number.isInteger(v) && v>=0 && v<PHASES.length ? v : 0; }
+function setPhase(i){ localStorage.setItem(PHASE_KEY, String(i)); render(); }
 
 async function load() {
   const btn = document.getElementById('regen');
   btn.disabled = true; btn.textContent = '… loading';
-  document.getElementById('view').innerHTML = '<div class="loading">Loading the pack from the sandbox…</div>';
+  if (VIEW === 'dashboard') render(); // keep the ribbon up; glance fills when data arrives
+  else document.getElementById('view').innerHTML = '<div class="loading">Loading the pack from the sandbox…</div>';
   try {
     const r = await fetch('/api/pack-data?label=DT5');
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -161,8 +204,34 @@ function renderRules(){ const s=DATA.rules; if(s.gap) return '<div class="refrow
   return (s.rules||[]).map(r=>'<div class="refrow"><span class="rt">'+esc(r.title)+'</span><div class="rb">'+esc(r.body)+'</div></div>').join(''); }
 function renderPack(){ return '<pre class="raw">'+esc(DATA.markdown)+'</pre>'; }
 
-const TITLES = {index:'Character Index',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
+function renderDashboard(){
+  const cur = currentPhase();
+  let ribbon = '<div class="ribbon">';
+  PHASES.forEach((p,i)=>{
+    const cls = i<cur ? ' done' : (i===cur ? ' current' : '');
+    ribbon += '<div class="phase-seg'+cls+'" data-phase="'+i+'" title="'+esc(p.d)+'"><div class="pnum">Phase '+(i+1)+'</div><div class="pname">'+esc(p.n)+'</div></div>';
+  });
+  ribbon += '</div>';
+  const cap = '<div class="phase-caption"><div class="ct">Phase '+(cur+1)+' &middot; '+esc(PHASES[cur].n)+'</div><div class="cd">'+esc(PHASES[cur].d)+'</div><div class="hint">Click a phase to set where the cycle is. Your choice is saved in this browser.</div></div>';
+
+  let glance = '';
+  if (DATA) {
+    const cards = [
+      [DATA.label, 'Cycle'],
+      [(DATA.index.characters||[]).length, 'Characters'],
+      [(DATA.collisions.collisions||[]).length, 'Name collisions'],
+      [(DATA.collisions.curated||[]).length, 'Curated notes'],
+    ];
+    glance = '<div class="glance">' + cards.map(([v,l])=>'<div class="gcard"><div class="gv">'+esc(v)+'</div><div class="gl">'+esc(l)+'</div></div>').join('') + '</div>';
+  }
+
+  return '<div class="dash-block"><div class="dash-secn">Game cycle</div>'+ribbon+cap+'</div>'
+       + '<div class="dash-block"><div class="dash-secn">Pack at a glance</div>'+glance+'</div>';
+}
+
+const TITLES = {dashboard:'Dashboard',index:'Character Index',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
 function count() {
+  if(VIEW==='dashboard') return 'Phase ' + (currentPhase()+1) + ' of ' + PHASES.length;
   if(!DATA) return '';
   if(VIEW==='index') return (DATA.index.characters||[]).length + ' characters';
   if(VIEW==='glossary') return ((DATA.glossary.entries||[]).length||0) + ' terms';
@@ -172,8 +241,10 @@ function count() {
   return '';
 }
 function render() {
-  document.getElementById('view-title').textContent = (DATA?DATA.label+' · ':'') + TITLES[VIEW];
+  document.getElementById('view-title').textContent = (DATA && VIEW!=='dashboard' ? DATA.label+' · ' : '') + TITLES[VIEW];
   document.getElementById('view-count').textContent = count();
+  // Dashboard's ribbon is static and renders even before the pack data arrives.
+  if(VIEW==='dashboard'){ document.getElementById('view').innerHTML = renderDashboard(); return; }
   if(!DATA) return;
   const fn = {index:renderIndex,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
   document.getElementById('view').innerHTML = fn();
@@ -185,7 +256,13 @@ document.getElementById('nav').addEventListener('click', (e) => {
   b.classList.add('on'); VIEW = b.dataset.view; render();
 });
 document.getElementById('regen').addEventListener('click', load);
-load();
+// Ribbon: click a phase to set current (persisted in localStorage).
+document.getElementById('content').addEventListener('click', (e) => {
+  const seg = e.target.closest('.phase-seg'); if(!seg) return;
+  setPhase(parseInt(seg.dataset.phase, 10));
+});
+render();   // paint the dashboard ribbon immediately
+load();     // then fetch pack data for the glance + other views
 </script>
 </body>
 </html>
