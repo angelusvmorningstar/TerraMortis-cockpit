@@ -7,3 +7,6 @@ out/*
 
 # Dependencies.
 node_modules/
+
+# Sandbox seed dump output — one-time setup, may carry player PII; never commit.
+_seed/
