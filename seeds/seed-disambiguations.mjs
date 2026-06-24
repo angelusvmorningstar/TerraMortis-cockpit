@@ -13,8 +13,14 @@ const DISAMBIGUATIONS = [
   {
     key: 'charles-vs-charlie',
     names: ['Charles Mercer-Willows', 'Charlie Ballsack'],
-    note: 'Charles Mercer-Willows (Gorgon, Circle of the Crone, ghouled family) is DISTINCT from Charlie Ballsack (Nosferatu, Invictus, ST character).',
+    note: 'Charles Mercer-Willows (Ventrue clan, Gorgons bloodline, Circle of the Crone, ghouled family) is DISTINCT from Charlie Ballsack (Nosferatu, Invictus, ST character). Note: Gorgons is Charles’s bloodline, not his clan.',
     source: 'hardening §2.A',
+  },
+  {
+    key: 'keeper-henry-st-john',
+    names: ['Henry St. John', 'Keeper', 'Senator Keeper'],
+    note: '"Henry St. John" and "Keeper" both refer to the Character Index entry "Senator Keeper" (Mekhet, Circle of the Crone). Resolve any of these names to that single character.',
+    source: 're-audit 3.1 finding (Keeper alias)',
   },
   {
     key: 'astrid-odeliese-elise',

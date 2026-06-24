@@ -30,12 +30,22 @@ const RULES = [
     source: 'audit instance 15',
   },
   {
-    // Placeholder, NOT the table itself. Inventing the rows here would reproduce instance 13.
+    // Real rows, copied verbatim from the suite source of truth
+    // (_DISCIPLINE_TERRITORIAL_EFFECTS in public/js/admin/downtime-views.js).
+    // Closes audit instance 13: the system EXISTS and now states its actual effects.
     key: 'discipline-territory-table',
-    title: 'Discipline-to-territory atmosphere table',
-    body: "A discipline-to-territory atmosphere system EXISTS in the chronicle's feeding matrix. Locate and seed its real rows from the suite feeding-matrix source. DO NOT invent it — inventing it would reproduce audit instance 13 (the model declared a real system absent, then fabricated a replacement).",
-    source: 'audit instance 13 — content PENDING the feeding-matrix source',
-    pending: true,
+    title: 'Discipline-to-territory atmosphere effects',
+    body: 'Heavy use of a discipline in a territory imparts an atmosphere. '
+      + 'Animalism: feral edge, heightened animal activity, lower inhibitions, territoriality. '
+      + 'Auspex: feeling of being watched, paranoia, superstition, ghost sightings, out-of-body experiences. '
+      + 'Dominate: forgetfulness, complacency, compliance, passivity, docility, confusion, rigidity. '
+      + 'Majesty: salacious activity, lasciviousness, obsessive behaviour, stalking, adultery, jealousy, heightened passions. '
+      + 'Nightmare: fear, dread, paranoia, nightmares, delusions, insomnia, restlessness. '
+      + 'Obfuscate: long shadows, things seen in peripheral vision, losing things, getting lost, disconnectedness, isolation, quietude, false identity, loneliness, vagrancy. '
+      + 'Protean: desire for body modification, dysphoria, outlandishness, provocative fashion, counter-cultural, hyper fitness, dysmorphia, rebelliousness. '
+      + 'Cruac: Dionysian excess, wantonness, rebelliousness, corruption, primal energy, ecstasis, frenzy, debauchery. '
+      + 'Theban: judgmental atmosphere, righteousness, prideful piety, rapture, guilt, sternness, rigidity, certitude.',
+    source: 'suite _DISCIPLINE_TERRITORIAL_EFFECTS (public/js/admin/downtime-views.js)',
   },
 ];
 
@@ -48,7 +58,7 @@ async function seedRules() {
       await col.updateOne({ key: doc.key }, { $set: doc }, { upsert: true });
       upserted += 1;
     }
-    console.log(`chronicle_rules: upserted ${upserted} rules (incl. 1 pending placeholder).`);
+    console.log(`chronicle_rules: upserted ${upserted} rules.`);
   } finally {
     await conn.close();
   }

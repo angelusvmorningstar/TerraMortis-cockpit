@@ -86,14 +86,17 @@ single-pass instances.
    method. Cheap text fix; lands before Phase 2.
 3. **Identity/conflation grounding is robust (n=3).** Two Renés, Charles vs Charlie,
    Anichka, Conrad never merged or mis-clanned across nine total identity judgements.
-4. **Minor pack defects re-confirmed (non-fabrication, tidy-ups):**
-   - Collision note labels Charles "Gorgon" (bloodline) while the index lists clan
-     Ventrue — tidy the collision-note generation so clan and bloodline are not conflated.
-   - "Henry St. John" is not a literal index entry (only "Senator Keeper"); add the alias
-     so the Keeper resolves by name as well as by collision note.
-   - Instance 13's real feeding-matrix rows are still a pending placeholder — seed them
-     into `chronicle_rules` so the pack can state the actual atmospheric effects, not just
-     refuse to invent them. (Data authoring; can land before Phase 2.)
+4. **Minor pack defects re-confirmed (non-fabrication, tidy-ups) — ALL RESOLVED in
+   Story 2.8 (2026-06-24):**
+   - ~~Collision note labels Charles "Gorgon" (bloodline) while the index lists clan
+     Ventrue~~ → note now splits clan (Ventrue) from bloodline (Gorgons).
+   - ~~"Henry St. John" is not a literal index entry (only "Senator Keeper")~~ → alias
+     disambiguation added; Keeper resolves by name.
+   - ~~Instance 13's real feeding-matrix rows are still a pending placeholder~~ → the 9
+     real rows from the suite `_DISCIPLINE_TERRITORIAL_EFFECTS` are now seeded into
+     `chronicle_rules`; the pack states the actual atmospheric effects.
+   - Plus the instance-1 soft spot (finding 2): the standing instruction now forbids
+     inferring travel direction/method from a haven.
 
 ## phase-2-scope-from-reaudit (retro action A3)
 
