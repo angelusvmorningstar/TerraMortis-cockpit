@@ -3,7 +3,7 @@ epic: 3
 story: 3.1
 story_key: cockpit.3.1.validate-grounding
 title: Re-audit a grounded cycle and record the fabrication drop
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 3.1: Re-audit a grounded cycle and record the fabrication drop
 
-Status: review (rev 2 — QA blockers addressed; re-review requested)
+Status: done (rev 2 — QA APPROVED 2026-06-24)
 
 > SM-drafted 2026-06-24 (cockpit convention; not the suite `_bmad` flow). Ready for dev on Angelus's go. This is Epic 3 — the Phase 1 MVP success proof. The generator (Epics 1-2) is done and proven; this story takes the actual reading.
 
@@ -121,6 +121,34 @@ five most-cited identity/conflation traps held across 3 passes each. New pack-im
 findings (non-blocking): forbid haven→travel inference; add "Henry St. John" index alias;
 tidy the Charles clan-vs-bloodline collision wording; seed the real discipline-territory
 rows. Full record: `epic-3-reaudit-results.md`; verbatim drafts: `epic-3-reaudit-drafts.md`.
+
+## QA Review (Quinn) — rev 2, 2026-06-24
+
+**Verdict: APPROVE.** Independent adversarial re-review verified each of the 8 prior
+findings against the actual artefacts (not the dev narrative):
+
+- **Blocker 1 (structural blindness): CLOSED.** Quinn inspected the sandbox dir directly
+  and grepped it for answer-key signature strings (`grounding_that_would_prevent`,
+  `what_you_said`, "hallucination audit") → 0 hits. Blindness demonstrated by physical
+  exclusion. All 9 drafters disclosed pack-only FILES READ.
+- **Blocker 2 (verbatim drafts): CLOSED.** Re-graded instances 1, 4, 13 independently;
+  agreed with all three verdicts.
+- **Blocker 3 (overclaim): CLOSED.** Headline honest; baseline under-count flagged.
+- **Blocker 4 (tally): CLOSED.** Independently counted 9 prevented / 4 gap / 0 fabricated.
+  Confirmed instance 13 correctly stated-the-gap (draft affirmed system exists, so the
+  declare-absent half did not recur); instance 1's partial grade defensible (if anything
+  marginally generous, but not counted as a win).
+- **NFR2 (item 8): CLOSED.** Ran `grep -i "haven="` → 0 hits; 4 residual "haven"
+  occurrences are legitimate in-world narrative + the deny-list rule itself. Fix is
+  central and correctly shaped.
+- **Items 5/6/7 (non-blocking): adequately addressed for a solo project.** Hard mode
+  earned its keep (surfaced the instance-1 soft spot); n=3 on the high-variance class.
+
+**Residual non-blocking recommendations (Phase 2 / not gating):** retain verbatim raw
+inputs for full reproducibility (DONE — appendix added to `epic-3-reaudit-drafts.md`
+post-review); apply the haven→travel standing-instruction fix; the three logged tidy-ups.
+
+AC1-AC5 all confirmed met. Story closed: review → done.
 
 ## QA Review (Quinn) — 2026-06-24
 

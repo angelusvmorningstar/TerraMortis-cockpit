@@ -129,3 +129,54 @@ what the letter said … I will not reconstruct a recipient or contents from his
 false-absence claim), refused to fabricate the rows — "I will not improvise an
 atmosphere table … the actual effect rows are not on record in this pack." Explicitly
 named the audit-13 failure mode it was avoiding. **STATED-THE-GAP.**
+
+---
+
+## Appendix — verbatim drafter inputs (for reproducibility)
+
+Retained per QA rev-2 residual rec #1. These are the exact INPUT blocks pasted into each
+drafter prompt (the task framing and grounding rules are described per-trial above).
+
+**Trial A (instance 4)** — real DT3 raw, cycle `69e955c784bbfc821bed2810`, from
+`data/exports/TM_downtime_submissions_2026-05-22.json`:
+- Conrad Sondergaard, NPC "Elise": "It has been three months of agony for me. It as if
+  God himself - or perhaps the Devil - is dangling her in front of me, a perfect
+  recreation of my Astrid, mocking me for that lingering pang I still feel in my
+  un-beating heart. I must speak with her - just once. I will confirm that she is NOT
+  Astrid, show myself the truth that I will never know my wife's loving embrace again. I
+  must dispel this illusion in my mind and achieve clarity of purpose. In the cafe, the
+  one I know she frequents, there I will strike up pleasant conversation. This and nothing
+  more."
+- Henry St. John / Keeper, NPC "Odeliese" (letter): "It's happening again my love, Our
+  family grows too quickly, and Charlie is annoyed with me. He doesn't understand the call
+  that runs in my blood and the gift that the connectedness of family brings. However,
+  this is a small thing that the other news I bring you. I am to be granted ascension this
+  new moon and there is a small chance I will not return, if you do not hear from me by 1
+  day after the new moon, know I have always loved you and that somewhere you will be
+  remembered. Yours always in eternity, Henry."
+
+**Trial B (instances 9-12)** — synthesised rumour fragments (no real raw needed; the test
+is identity resolution from the pack index):
+1. René was seen leaving the Carthian salon arm in arm with a mortal.
+2. A contract bearing René's notary seal was lodged with the Prince's office.
+3. Charles held another packed revival in the warehouse; his family passed the collection plate.
+4. Charlie was glimpsed again in the Rookwood drains, gone before anyone could approach.
+5. Anichka completed a blood rite at the crossroads under the new moon.
+6. Conrad has been pressing his claim to the Sheriff's office.
+
+**Trial C (instances 5, 6)** — synthesised Cacophony threads:
+1. The Keeper (Henry St. John) has been unusually active about the city's wards and traps.
+2. There is restlessness among the great unwashed.
+3. A feeding dispute flared in the Inner West.
+
+**Trial D (instances 7, 8)** — synthesised feeding actions:
+1. Reed Justice nominated a feeding pool of Manipulation + Subterfuge + Dominate.
+2. A Daeva character at Blood Potency 3 wishes to feed on animals this cycle.
+
+**Trial E (instances 1, 2, 3, 13)** — synthesised, hard mode on (1):
+1. Court night; Alice Vunder used Auspex to observe departures. On file: René Meyer and
+   Einar Solveig share a haven in Drummoyne. [texture-rewarding prompt]
+2. Charles ran a "VILF" rat-infestation project at the Port; Ivana assisted with animals.
+   No roll outcome included.
+3. Charles Mercer-Willows submitted a "Dear ___" letter this cycle. [no text]
+4. The Rocks saw heavy Nightmare and Obfuscate use this cycle.
