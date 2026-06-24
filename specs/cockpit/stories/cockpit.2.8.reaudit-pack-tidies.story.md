@@ -3,7 +3,7 @@ epic: 2
 story: 2.8
 story_key: cockpit.2.8.reaudit-pack-tidies
 title: Pack tidy-ups surfaced by the Story 3.1 re-audit
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -95,7 +95,13 @@ Re-ran both seeds against LOCAL `tm_chronicle` (disambiguations: 4 notes; chroni
 - `out/drafting-pack.md` (regenerated — gitignored)
 
 ## QA Review
-_(pending — after dev)_
+
+**Verdict: APPROVE (independent, 2026-06-24).** All 5 ACs verified against the
+regenerated pack. AC4 (the key risk) checked by verbatim comparison of all 9 discipline
+rows against the suite source `_DISCIPLINE_TERRITORIAL_EFFECTS` — every effect term
+present and unaltered; the only difference is one acceptable punctuation normalisation
+("out of body" → "out-of-body"). AC5 regression: `haven=` count 0, no addresses/links.
+Status: review → done.
 
 ## References
 - `specs/cockpit/stories/epic-3-reaudit-results.md` → "Key findings" 2 and 4
