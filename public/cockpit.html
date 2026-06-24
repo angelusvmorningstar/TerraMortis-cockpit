@@ -113,6 +113,17 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
 .prov{font-size:.66rem;color:var(--rp-txt3);font-style:italic;}
 .gap{display:inline-block;font-family:var(--fl);font-size:.7rem;font-weight:700;color:var(--warn-orange);background:var(--warn-orange-bg);border:1px solid var(--warn-orange-bdr);border-radius:4px;padding:1px 7px;}
 .bsec{font-family:var(--fl);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--label-tertiary);margin:16px 0 6px;}
+
+/* Draft (context-assembler) */
+.subm{width:100%;min-height:120px;resize:vertical;font-family:var(--ft);font-size:.9rem;color:var(--txt);background:var(--rp-surf);border:1px solid var(--bdr2);border-radius:8px;padding:12px 14px;line-height:1.5;}
+.subm:focus{outline:none;border-color:var(--accent-a40);}
+.dactions{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.dbtn{font-family:var(--fl);font-weight:700;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:8px 15px;cursor:pointer;border:1px solid var(--crim-active);background:var(--crim);color:var(--txt-on-dark);}
+.dbtn:hover{background:var(--crim-hover);}
+.dbtn.ghost{background:var(--surf2);color:var(--accent);border-color:var(--accent-a40);}
+.dbtn.ghost:hover{background:var(--surf3);}
+.copymsg{font-family:var(--fl);font-size:.74rem;font-weight:700;color:var(--green);}
+.copymsg.warn{color:var(--warn-orange);}
 </style>
 </head>
 <body>
@@ -126,12 +137,12 @@ pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8
       <button class="sidebar-btn on" data-view="dashboard">Dashboard</button>
       <button class="sidebar-btn" data-view="index">Character Index</button>
       <button class="sidebar-btn" data-view="brief">Character Brief</button>
+      <button class="sidebar-btn" data-view="draft">Draft</button>
       <button class="sidebar-btn" data-view="glossary">Glossary</button>
       <button class="sidebar-btn" data-view="channel">Channel Rules</button>
       <button class="sidebar-btn" data-view="rules">Codified Rules</button>
       <button class="sidebar-btn" data-view="pack">Raw Pack</button>
       <div class="sidebar-secn">Future (Epic 4+)</div>
-      <button class="sidebar-btn future">Draft workspace</button>
       <button class="sidebar-btn future">Re-audit</button>
       <button class="sidebar-btn future">Living City</button>
     </div>
@@ -289,12 +300,63 @@ function renderBrief(){
   return roster + '<div class="brief-card"><div class="bname">'+esc(c.displayName)+aka+'</div>'+identity+cw+facts+'</div>';
 }
 
-const TITLES = {dashboard:'Dashboard',index:'Character Index',brief:'Character Brief',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
+// --- Draft: context-assembler (Story 4.4) ---
+let SUBMISSION = '';
+function standingInstruction(){ const m=DATA.markdown||''; const i=m.indexOf('## Standing instruction'); return i<0 ? '' : m.slice(i+'## Standing instruction'.length).trim(); }
+function briefText(c){
+  const L=[]; const aka = c.legalName&&c.legalName!==c.sortName ? ' ('+c.legalName+')' : '';
+  L.push('CHARACTER: '+c.displayName+aka);
+  const idv=(l,v)=>L.push(l+': '+((!v||v==='[none on record]')?'[none on record]':v));
+  idv('Clan',c.clan); idv('Covenant',c.covenant); idv('Bloodline',c.bloodline); idv('Court title',c.courtTitle);
+  L.push('Travel: [none on record] - do not infer from a haven.');
+  L.push('Prior letters: [none validated this cycle].');
+  const col=collisionsFor(c);
+  if(col.groups.length||col.curated.length){ L.push('Distinct from (do not merge):');
+    col.groups.forEach(g=>L.push('  - "'+g.forename+'": '+g.members.map(m=>m.displayName).join('; ')));
+    col.curated.forEach(d=>L.push('  - '+d.note)); }
+  const fs=c.dossierFacts||[];
+  if(fs.length){ L.push('Dossier facts:'); fs.forEach(f=>L.push('  - '+f.tag+': '+f.value+' ('+f.source+')')); }
+  return L.join('\n');
+}
+function refPrelude(){
+  const L=[]; const g=DATA.glossary, ch=DATA.channelRules, r=DATA.rules;
+  if(g&&g.entries){ L.push('GLOSSARY:'); g.entries.forEach(e=>L.push('  - '+e.term+': '+e.definition)); }
+  if(ch&&ch.channels){ L.push('CHANNEL RULES:'); ch.channels.forEach(c=>L.push('  - '+c.channel+' - visible: '+(c.visible||[]).join(', ')+'; invisible: '+(c.invisible||[]).join(', '))); }
+  if(r&&r.rules){ L.push('CODIFIED RULES:'); r.rules.forEach(x=>L.push('  - '+x.title+': '+x.body)); }
+  return L.join('\n');
+}
+function assemblePrompt(c, submission){
+  return [
+    'You are assisting the Storyteller for Terra Mortis (Vampire: the Requiem 2e, Sydney).',
+    'Draft the downtime resolution for the submission below, grounded ONLY in the facts here.',
+    '', '== GROUNDED BRIEF ==', briefText(c),
+    '', '== REFERENCE PRELUDE ==', refPrelude(),
+    '', '== STANDING INSTRUCTION ==', standingInstruction(),
+    '', '== PLAYER SUBMISSION ==', submission.trim(),
+    '', '== TASK ==',
+    'Draft the resolution. Resolve identity only via the brief above. Where a needed fact is absent, say so ("no X on record") - never invent it. Do not infer travel direction or method from a haven.'
+  ].join('\n');
+}
+function renderDraft(){
+  const chars=(DATA.index.characters||[]).slice().sort((a,b)=>String(a.sortName||a.displayName).localeCompare(String(b.sortName||b.displayName)));
+  const c=chars.find(x=>x.id===selectedCharId())||null;
+  const roster='<div class="roster">'+chars.map(x=>'<span class="chip'+(c&&x.id===c.id?' active':'')+'" data-char="'+esc(x.id)+'">'+esc(x.sortName||x.displayName)+'</span>').join('')+'</div>';
+  if(!c) return roster+'<div class="loading">Select a character, then paste their submission to assemble a grounded prompt.</div>';
+  return roster
+    + '<div class="bsec">Player submission - '+esc(c.sortName||c.displayName)+'</div>'
+    + '<textarea id="subm" class="subm" placeholder="Paste the player submission here…">'+esc(SUBMISSION)+'</textarea>'
+    + '<div class="dactions"><button class="dbtn" id="buildp">Build grounded prompt</button>'
+    + '<button class="dbtn ghost" id="copyp" style="display:none">Copy</button><span class="copymsg" id="copymsg"></span></div>'
+    + '<pre class="raw" id="promptout" style="display:none"></pre>';
+}
+
+const TITLES = {dashboard:'Dashboard',index:'Character Index',brief:'Character Brief',draft:'Draft',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
 function count() {
   if(VIEW==='dashboard') return 'Phase ' + (currentPhase()+1) + ' of ' + PHASES.length;
   if(!DATA) return '';
   if(VIEW==='index') return (DATA.index.characters||[]).length + ' characters';
   if(VIEW==='brief'){ const c=(DATA.index.characters||[]).find(x=>x.id===selectedCharId()); return c?(c.sortName||c.displayName):'pick a character'; }
+  if(VIEW==='draft'){ const c=(DATA.index.characters||[]).find(x=>x.id===selectedCharId()); return c?('assembler · '+(c.sortName||c.displayName)):'pick a character'; }
   if(VIEW==='glossary') return ((DATA.glossary.entries||[]).length||0) + ' terms';
   if(VIEW==='channel') return ((DATA.channelRules.channels||[]).length||0) + ' channels';
   if(VIEW==='rules') return ((DATA.rules.rules||[]).length||0) + ' rules';
@@ -307,7 +369,7 @@ function render() {
   // Dashboard's ribbon is static and renders even before the pack data arrives.
   if(VIEW==='dashboard'){ document.getElementById('view').innerHTML = renderDashboard(); return; }
   if(!DATA) return;
-  const fn = {index:renderIndex,brief:renderBrief,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
+  const fn = {index:renderIndex,brief:renderBrief,draft:renderDraft,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
   document.getElementById('view').innerHTML = fn();
 }
 
@@ -323,6 +385,29 @@ document.getElementById('content').addEventListener('click', (e) => {
   if(seg){ setPhase(parseInt(seg.dataset.phase, 10)); return; }
   const chip = e.target.closest('.chip[data-char]');
   if(chip){ setChar(chip.dataset.char); return; }
+  if(e.target.closest('#buildp')){
+    const c=(DATA?DATA.index.characters:[]).find(x=>x.id===selectedCharId());
+    const ta=document.getElementById('subm'); const sub=ta?ta.value:'';
+    const msg=document.getElementById('copymsg');
+    if(!c || !sub.trim()){ if(msg){ msg.className='copymsg warn'; msg.textContent='Pick a character and paste a submission first.'; } return; }
+    const out=document.getElementById('promptout');
+    out.textContent=assemblePrompt(c, sub); out.style.display='block';
+    document.getElementById('copyp').style.display='inline-block';
+    if(msg){ msg.className='copymsg'; msg.textContent=''; }
+    return;
+  }
+  if(e.target.closest('#copyp')){
+    const out=document.getElementById('promptout'); const msg=document.getElementById('copymsg');
+    const text=out?out.textContent:'';
+    const done=()=>{ if(msg){ msg.className='copymsg'; msg.textContent='copied'; } };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(()=>{ const r=document.createRange(); r.selectNode(out); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); done(); }); }
+    else { const r=document.createRange(); r.selectNode(out); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); done(); }
+    return;
+  }
+});
+// Keep the submission across re-renders (e.g. switching the selected character).
+document.getElementById('content').addEventListener('input', (e) => {
+  if(e.target.id==='subm') SUBMISSION = e.target.value;
 });
 render();   // paint the dashboard ribbon immediately
 load();     // then fetch pack data for the glance + other views
