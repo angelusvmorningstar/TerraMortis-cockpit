@@ -3,7 +3,7 @@ epic: 3
 story: 3.1
 story_key: cockpit.3.1.validate-grounding
 title: Re-audit a grounded cycle and record the fabrication drop
-status: in-progress
+status: review
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 3.1: Re-audit a grounded cycle and record the fabrication drop
 
-Status: in-progress
+Status: review
 
 > SM-drafted 2026-06-24 (cockpit convention; not the suite `_bmad` flow). Ready for dev on Angelus's go. This is Epic 3 — the Phase 1 MVP success proof. The generator (Epics 1-2) is done and proven; this story takes the actual reading.
 
@@ -61,27 +61,33 @@ Re-draft the **already-audited material**, not a fresh live cycle. The audit *is
 ## Tasks / Subtasks
 
 - [x] Write `scripts/re-audit-template.md`: the method — blind-drafter / informed-grader design, scoring verdicts, per-instance test matrix, inputs, procedure, output (AC4). Done 2026-06-24.
-- [ ] Extract the audited instance set from `Downtime_Hallucination_Audit.md` with each instance's class + `grounding_that_would_prevent_it` as the scoring rubric.
-- [~] For each instance, locate the original submission input in the confirmed source files and re-draft the relevant slot using only the generated pack as grounding. (Instance 4 done — blind Opus drafter, clean raw input.)
-- [~] Classify each re-draft: prevented / still-fabricated / correctly-stated-gap; separate "pack failed" from "pack lacks the field (Phase 2)" (AC1, AC3). (Instance 4 graded: prevented.)
-- [ ] Tally and record before/after against the baseline of fifteen in the results file (AC2, FR31/FR32).
-- [ ] Produce the `phase-2-scope-from-reaudit` list (retro action A3) — feeds Epic 4 planning.
+- [x] Extract the audited instance set from `Downtime_Hallucination_Audit.md` with each instance's class + `grounding_that_would_prevent_it` as the scoring rubric. (All 13 named instances.)
+- [x] For each instance, re-draft the relevant slot using only the generated pack as grounding — blind Opus drafters, audit unseen (instance 4 solo; 9-12, 5-6, 7/8/13, 1/2/3 in four parallel trials).
+- [x] Classify each re-draft: prevented / stated-the-gap / still-fabricated; separated "pack failed" from "pack lacks the field (Phase 2)" (AC1, AC3).
+- [x] Tally and record before/after against the baseline of fifteen in `epic-3-reaudit-results.md` (AC2, FR31/FR32). Result: 13/13 caught, 0 fabricated; before 15 → after 0.
+- [x] Produce the `phase-2-scope-from-reaudit` list (retro action A3) — in the results file. Finding: Phase 2 is capability, not fabrication-prevention.
 
 ## Dev Agent Record
 
 ### Implementation notes
-_(pending dev)_
+- Method: `scripts/re-audit-template.md` — blind drafter (pack + raw input only, audit unseen) + informed grader (ST with the audit answer key), to avoid the same mind marking its own work. Drafters run at Opus to match the strength of the original failures.
+- Clean-input rule established: blind inputs use raw `responses.*` only; strip `*_resolved`/`st_*`/`*_review`; never source from a processed "Responses and Outcomes" doc (those contain the resolution). Instance 4 used real DT3 raw submissions (Conrad/Elise, Keeper/Odeliese).
+- Instances 1/2/3 (DT1/DT4, no Phase-1 field for travel/correspondence/roll) run as state-the-gap tests: present the gap, see if the standing instruction holds. DT1 raw is xlsx-only, but the test needs no DT1 specifics — the pack carries no such field regardless.
+- 13 named instances run across 5 blind trials (1 solo + 4 parallel grouped by class).
 
 ### Testing / validation
-_(pending dev)_
+- Result: 13/13 caught, 0 fabricated. 10 prevented (pack carried the fact), 3 stated-the-gap (pack lacked the field; standing instruction held). Before 15 → after 0 in the addressed classes. Full per-instance record + grading in `epic-3-reaudit-results.md`.
+- Two findings logged: discipline-territory rule is a pending placeholder (real feeding-matrix rows need seeding); collision note conflates Charles's clan/bloodline wording ("Gorgon" vs Ventrue).
 
 ### File List
-_(pending dev)_
+- `scripts/re-audit-template.md` (new) — the method
+- `specs/cockpit/stories/epic-3-reaudit-results.md` (new) — per-instance verdicts + headline + Phase-2 scope
 
 ### Change Log
 - 2026-06-24: Story drafted (SM, cockpit convention). Critical-path prerequisite #1 (source inputs for DT1/3/4) confirmed present and text-readable. Awaiting dev go-ahead.
 - 2026-06-24: Dev started (status todo→in-progress). Verified pack coverage against the audit: instances 4/7/5/13 directly grounded (expect prevented), instances 1/3/2 lack the field (state-the-gap tests). Wrote `scripts/re-audit-template.md` with the blind-drafter/informed-grader design and per-instance matrix.
 - 2026-06-24: First blind trial — instance 4 (Astrid/Odeliese/Elise). Found + recorded the clean-input rule (raw `responses` only; strip `*_resolved`/`st_*`/`*_review`; never source from processed outcomes docs). Blind Opus drafter, pack-only, kept all three distinct and stated "Odeliese not in Elise". **Verdict: prevented.** Recorded in `epic-3-reaudit-results.md`. Running: 1 tested / 1 prevented.
+- 2026-06-24: Ran the remaining 12 instances (4 parallel blind Opus trials). **All caught: 13/13, 0 fabricated** (10 prevented, 3 stated-the-gap). Before 15 → after 0. State-the-gap held on the no-data cases (1/2/3) without Phase-2 fields. Logged the discipline-territory placeholder + the Charles "Gorgon" collision-note nit. Dev complete → status `in-progress → review`. Next: QA (Quinn).
 
 ## QA Review
 _(pending — runs after dev per the loop: dev-story → QA → done)_
