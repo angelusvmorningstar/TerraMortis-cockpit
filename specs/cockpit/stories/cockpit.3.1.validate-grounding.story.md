@@ -3,7 +3,7 @@ epic: 3
 story: 3.1
 story_key: cockpit.3.1.validate-grounding
 title: Re-audit a grounded cycle and record the fabrication drop
-status: todo
+status: in-progress
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 3.1: Re-audit a grounded cycle and record the fabrication drop
 
-Status: todo
+Status: in-progress
 
 > SM-drafted 2026-06-24 (cockpit convention; not the suite `_bmad` flow). Ready for dev on Angelus's go. This is Epic 3 — the Phase 1 MVP success proof. The generator (Epics 1-2) is done and proven; this story takes the actual reading.
 
@@ -60,7 +60,7 @@ Re-draft the **already-audited material**, not a fresh live cycle. The audit *is
 
 ## Tasks / Subtasks
 
-- [ ] Write `scripts/re-audit-template.md`: the method (assemble audited instances → re-draft each using only the pack → classify recurrence by the audit's classes → tally before/after → log Phase-2-only misses) (AC4).
+- [x] Write `scripts/re-audit-template.md`: the method — blind-drafter / informed-grader design, scoring verdicts, per-instance test matrix, inputs, procedure, output (AC4). Done 2026-06-24.
 - [ ] Extract the audited instance set from `Downtime_Hallucination_Audit.md` with each instance's class + `grounding_that_would_prevent_it` as the scoring rubric.
 - [ ] For each instance, locate the original submission input in the confirmed source files and re-draft the relevant slot using only the generated pack as grounding.
 - [ ] Classify each re-draft: prevented / still-fabricated / correctly-stated-gap; separate "pack failed" from "pack lacks the field (Phase 2)" (AC1, AC3).
@@ -80,6 +80,7 @@ _(pending dev)_
 
 ### Change Log
 - 2026-06-24: Story drafted (SM, cockpit convention). Critical-path prerequisite #1 (source inputs for DT1/3/4) confirmed present and text-readable. Awaiting dev go-ahead.
+- 2026-06-24: Dev started (status todo→in-progress). Verified pack coverage against the audit: instances 4/7/5/13 directly grounded (expect prevented), instances 1/3/2 lack the field (state-the-gap tests). Wrote `scripts/re-audit-template.md` with the blind-drafter/informed-grader design and per-instance matrix. Next: run the first blind-drafter trial.
 
 ## QA Review
 _(pending — runs after dev per the loop: dev-story → QA → done)_
