@@ -1,0 +1,9 @@
+# Local environment — never commit connection strings.
+.env
+
+# Generated drafting packs are disposable output. Keep the directory (.gitkeep), ignore its contents.
+out/*
+!out/.gitkeep
+
+# Dependencies.
+node_modules/

@@ -1,0 +1,1 @@
+# Keeps the out/ directory in git. Generated drafting packs (out/*.md) are gitignored.

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ST Cockpit — visual mockup (Phase 2, illustrative)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@400;600;700;900&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ── Parchment design tokens (subset, from public/css/theme.css; light only) ── */
+:root{
+  --bg:#F4EFE4;--surf:#EDE7D8;--surf1:#E9E2D1;--surf2:#E5DEC9;--surf3:#DBD3BC;
+  --bdr:rgba(120,90,40,.20);--bdr2:rgba(120,90,40,.38);
+  --gold:#8B6010;--gold2:#7A5208;--gdim:#A07A20;
+  --gold-a6:rgba(120,90,40,.06);--gold-a8:rgba(120,90,40,.08);--gold-a12:rgba(120,90,40,.12);--gold-a15:rgba(120,90,40,.15);--gold-a30:rgba(120,90,40,.30);
+  --crim:#7A0000;--crim2:#8B1010;--crim-hover:#A00000;--crim-active:#6B0000;
+  --crim-a8:rgba(122,0,0,.08);--crim-a25:rgba(122,0,0,.25);--crim-a40:rgba(122,0,0,.40);
+  --accent:var(--crim);--accent-a40:var(--crim-a40);
+  --txt:#1C1410;--txt2:#4A3A28;--txt3:#6A5238;--label-tertiary:#8a7060;
+  --fh:'Cinzel',serif;--fl:'Lato',sans-serif;--ft:'Libre Baskerville',serif;
+  --rp-surf:#FFF8EE;--rp-txt:#2A1F14;--rp-txt2:#3A2A1A;--rp-txt3:#7A6A50;--rp-head:#5A1A1A;--rp-bdr:rgba(139,0,0,.12);--rp-bdr2:rgba(139,0,0,.20);
+  --warn-orange:#8b3d00;--warn-orange-bg:rgba(139,61,0,.10);--warn-orange-bdr:rgba(139,61,0,.40);
+  --green:#1E6A1E;--txt-on-dark:#F4EFE4;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{background:var(--bg);color:var(--txt);font-family:var(--ft);font-size:14px;line-height:1.55;
+  background-image:radial-gradient(rgba(120,90,40,.03) 1px,transparent 1px);background-size:4px 4px;}
+
+/* ── Admin shell (mirrors admin-layout.css) ── */
+#app{display:flex;min-height:100vh;}
+#sidebar{width:clamp(180px,16vw,220px);flex-shrink:0;height:100vh;position:sticky;top:0;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid var(--bdr);}
+.sidebar-title{font-family:var(--fh);font-size:18px;font-weight:900;color:var(--accent);letter-spacing:1px;}
+.sidebar-sub{font-family:var(--fl);font-size:13px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+.sidebar-nav{display:flex;flex-direction:column;padding:12px 0;}
+.sidebar-secn{font-family:var(--fl);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--label-tertiary);padding:14px 20px 5px;}
+.sidebar-btn{background:none;border:none;color:var(--txt2);font-family:var(--fl);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-align:left;padding:12px 20px;cursor:pointer;border-left:3px solid transparent;}
+.sidebar-btn:hover{background:var(--surf2);color:var(--txt);}
+.sidebar-btn.on{color:var(--accent);border-left-color:var(--accent);background:var(--surf2);}
+.sidebar-btn.future{color:var(--label-tertiary);font-weight:400;cursor:default;}
+.sidebar-btn.future:hover{background:none;color:var(--label-tertiary);}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--bdr);padding:14px 20px;}
+.sandbox-chip{display:flex;align-items:center;gap:7px;font-family:var(--fl);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--green);}
+.sandbox-chip .led{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(30,106,30,.15);}
+.sidebar-foot small{display:block;color:var(--txt3);font-size:10px;font-style:italic;margin-top:4px;}
+
+#content{flex:1;padding:32px clamp(16px,2.5vw,40px);overflow-y:auto;min-width:0;}
+.domain-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
+.domain-header h2{font-family:var(--fl);font-size:22px;color:var(--accent);font-weight:600;margin:0;}
+.domain-count{font-family:var(--fl);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label-tertiary);}
+.btn-sm{font-size:12px;padding:4px 12px;background:var(--surf2);color:var(--accent);border:1px solid var(--accent-a40);border-radius:4px;cursor:pointer;font-family:var(--fl);font-weight:700;}
+.btn-sm:hover{background:var(--surf3);}
+.btn-sm.solid{background:var(--crim);color:var(--txt-on-dark);border-color:var(--crim-active);}
+.btn-sm.solid:hover{background:var(--crim-hover);}
+.domain-header .btn-sm:first-of-type{margin-left:auto;}
+
+/* ── Drafting workspace (within the Draft domain) ── */
+.work{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;align-items:start;}
+.col{display:flex;flex-direction:column;gap:16px;}
+.panel{background:var(--surf1);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;}
+.panel-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--gold-a6);border-bottom:1px solid var(--bdr);}
+.panel-head h3{font-family:var(--fh);font-weight:600;font-size:.82rem;letter-spacing:.05em;color:var(--gold2);margin:0;text-transform:uppercase;}
+.panel-head .meta{margin-left:auto;font-size:.7rem;color:var(--txt3);font-style:italic;}
+.panel-body{padding:15px 17px;}
+
+.subject{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.subject .name{font-family:var(--fh);font-weight:700;font-size:1.18rem;color:var(--txt);}
+.tag{font-family:var(--fl);font-size:.64rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:11px;border:1px solid var(--bdr2);background:var(--gold-a8);color:var(--gold2);}
+.tag.crim{background:var(--crim-a8);color:var(--crim);border-color:var(--crim-a25);}
+.subject .switch{margin-left:auto;font-family:var(--fl);font-weight:700;font-size:.72rem;color:var(--txt2);border:1px solid var(--bdr2);border-radius:5px;padding:6px 11px;background:var(--surf);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;}
+
+.reading{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:6px;padding:14px 16px;color:var(--rp-txt);box-shadow:inset 0 1px 2px rgba(60,40,10,.06);}
+.reading .label{font-family:var(--fl);font-weight:700;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rp-txt3);margin-bottom:8px;}
+.reading p{margin:0 0 9px;}.reading p:last-child{margin-bottom:0;}
+.proposal{position:relative;border-color:var(--gold-a30);}
+.proposal .badge{position:absolute;top:-9px;left:14px;font-family:var(--fl);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--gold2);color:#fff;padding:2px 9px;border-radius:9px;}
+.row-actions{display:flex;gap:9px;margin-top:14px;}
+.act{font-family:var(--fl);font-weight:700;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;border-radius:5px;padding:8px 15px;cursor:pointer;border:1px solid transparent;}
+.act.primary{background:var(--crim);color:var(--txt-on-dark);border-color:var(--crim-active);}
+.act.primary:hover{background:var(--crim-hover);}
+.act.ghost{background:var(--surf2);color:var(--accent);border-color:var(--accent-a40);}
+
+.staged{display:flex;flex-direction:column;gap:8px;}
+.change{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--gold2);border-radius:5px;font-size:.84rem;}
+.change .dot{margin-top:4px;width:8px;height:8px;border-radius:50%;background:var(--gold2);flex:0 0 auto;}
+.change .before{color:var(--txt3);text-decoration:line-through;}
+.change .after{color:var(--green);font-weight:700;}
+.change small{display:block;color:var(--txt3);font-style:italic;margin-top:2px;}
+
+/* grounded brief */
+.brief{background:var(--rp-surf);border:1px solid var(--rp-bdr2);border-radius:8px;overflow:hidden;}
+.brief .bhead{padding:12px 16px;border-bottom:1px solid var(--rp-bdr);background:rgba(139,0,0,.04);}
+.brief .bhead h3{font-family:var(--fh);font-weight:700;font-size:1rem;color:var(--rp-head);margin:0;}
+.brief .bhead .sub{font-size:.76rem;color:var(--rp-txt2);margin-top:2px;}
+.brief .bbody{padding:11px 16px;}
+.fact{display:flex;gap:8px;padding:5px 0;font-size:.85rem;border-bottom:1px dashed var(--rp-bdr);}
+.fact:last-child{border-bottom:none;}
+.fact .k{flex:0 0 90px;color:var(--rp-txt3);font-family:var(--fl);font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding-top:3px;}
+.fact .v{flex:1;color:var(--rp-txt);}
+.prov{font-size:.66rem;color:var(--rp-txt3);font-style:italic;}
+.gap{display:inline-block;font-family:var(--fl);font-size:.7rem;font-weight:700;color:var(--warn-orange);background:var(--warn-orange-bg);border:1px solid var(--warn-orange-bdr);border-radius:4px;padding:1px 7px;}
+.warn-collide{margin:11px 16px 14px;padding:9px 12px;background:var(--crim-a8);border:1px solid var(--crim-a25);border-left:3px solid var(--crim);border-radius:5px;font-size:.79rem;color:var(--crim);}
+.warn-collide b{font-family:var(--fh);}
+.warn-collide ul{margin:5px 0 0;padding-left:17px;color:var(--rp-txt2);}
+
+.ref details{border-bottom:1px solid var(--bdr);}.ref details:last-child{border-bottom:none;}
+.ref summary{list-style:none;cursor:pointer;padding:10px 16px;font-family:var(--fh);font-size:.76rem;font-weight:600;letter-spacing:.04em;color:var(--gold2);display:flex;align-items:center;gap:8px;}
+.ref summary::-webkit-details-marker{display:none;}
+.ref summary::before{content:'▸';color:var(--gdim);font-size:.7rem;}
+.ref details[open] summary::before{content:'▾';}
+.ref .refbody{padding:0 16px 12px 30px;font-size:.81rem;color:var(--txt2);}
+.ref .refbody p{margin:0 0 7px;}
+.ref .vis{color:var(--green);font-weight:700;}.ref .invis{color:var(--crim);font-weight:700;}
+.standing{font-size:.77rem;color:var(--txt2);font-style:italic;padding:11px 16px;background:var(--gold-a6);border-top:1px solid var(--bdr);}
+
+.roster{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{font-family:var(--fl);font-weight:700;font-size:.72rem;letter-spacing:.03em;padding:5px 11px;border-radius:13px;background:var(--surf);border:1px solid var(--bdr2);color:var(--txt2);cursor:pointer;}
+.chip.active{background:var(--crim-a8);border-color:var(--crim-a40);color:var(--crim);}
+.chip:hover{background:var(--gold-a12);}
+
+.note{padding:14px clamp(16px,2.5vw,40px) 30px;font-size:.74rem;color:var(--txt3);font-style:italic;}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Sidebar (cockpit domains) -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Terra Mortis</div>
+      <div class="sidebar-sub">ST Cockpit</div>
+    </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-btn on">Draft</button>
+      <button class="sidebar-btn">Character Index</button>
+      <button class="sidebar-btn">Glossary</button>
+      <button class="sidebar-btn">Channel Rules</button>
+      <button class="sidebar-btn">Codified Rules</button>
+      <button class="sidebar-btn">Re-audit</button>
+      <div class="sidebar-secn">Future (Phase 3)</div>
+      <button class="sidebar-btn future">Living City</button>
+      <button class="sidebar-btn future">Map</button>
+      <button class="sidebar-btn future">Factions</button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="sandbox-chip"><span class="led"></span>Sandbox · tm_suite_dev</div>
+      <small>read-only · no production access</small>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main id="content">
+    <div class="domain-header">
+      <h2>Draft</h2>
+      <span class="domain-count">Cycle DT5 · 30 characters</span>
+      <button class="btn-sm">View pack</button>
+      <button class="btn-sm solid">⟳ Regenerate</button>
+    </div>
+
+    <div class="work">
+
+      <!-- LEFT: the Tuesday-night loop -->
+      <div class="col">
+        <div class="panel">
+          <div class="panel-head"><h3>Drafting</h3><span class="meta">submission → propose → review</span></div>
+          <div class="panel-body">
+            <div class="subject">
+              <span class="name">René Meyer</span>
+              <span class="tag">Daeva</span><span class="tag">Carthian</span><span class="tag">Regent</span>
+              <span class="tag crim">⚠ name collision</span>
+              <button class="switch">Switch ▾</button>
+            </div>
+
+            <div class="reading" style="margin-top:14px;">
+              <div class="label">Player submission · DT5</div>
+              <p>"After Court I head <em>west on foot</em> with a masked mortal in tow, doubling back through the Drummoyne backstreets to lose any tail before I feed."</p>
+            </div>
+
+            <div class="row-actions">
+              <button class="act primary">✎ Draft outcome</button>
+              <button class="act ghost">View grounding</button>
+            </div>
+
+            <div class="reading proposal" style="margin-top:18px;">
+              <span class="badge">AI proposal · review before commit</span>
+              <div class="label" style="margin-top:6px;">Drafted reply</div>
+              <p>René slips from the convocation without ceremony. <strong>Her exact route is not on record</strong>, so the scene keeps it ambiguous: she is seen heading roughly west into the backstreets, no more.</p>
+              <p><em>No destination is invented, and the masked mortal is hers alone — not linked to any other departing Kindred.</em></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Staged changes</h3><span class="meta">nothing commits until you approve</span></div>
+          <div class="panel-body">
+            <div class="staged">
+              <div class="change"><span class="dot"></span><div>Territory Pulse — Drummoyne <span class="after">+1 feeding event</span><small>writes to the cycle report on commit</small></div></div>
+              <div class="change"><span class="dot"></span><div>Rumour (Cacophony) <span class="before">"the old Zelani René…"</span> <span class="after">covenant + public title only</span><small>bloodline stripped — invisible to the Cacophony</small></div></div>
+            </div>
+            <div class="row-actions">
+              <button class="act primary">Commit cycle ▸</button>
+              <button class="act ghost">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: always-present grounded context -->
+      <div class="col">
+        <div class="brief">
+          <div class="bhead">
+            <h3>René Meyer</h3>
+            <div class="sub">Grounded brief · projected from <em>tm_suite_dev</em></div>
+          </div>
+          <div class="bbody">
+            <div class="fact"><span class="k">Clan</span><span class="v">Daeva <span class="prov">(sheet)</span></span></div>
+            <div class="fact"><span class="k">Covenant</span><span class="v">Carthian Movement <span class="prov">(sheet)</span></span></div>
+            <div class="fact"><span class="k">Bloodline</span><span class="v">Zelani <span class="prov">(sheet)</span></span></div>
+            <div class="fact"><span class="k">Title</span><span class="v">Regent <span class="prov">(sheet)</span></span></div>
+            <div class="fact"><span class="k">Travel</span><span class="v"><span class="gap">none on record</span> &nbsp;do not infer from haven</span></div>
+            <div class="fact"><span class="k">Prior letters</span><span class="v"><span class="gap">none on record</span></span></div>
+          </div>
+          <div class="warn-collide">
+            <b>⚠ Three distinct "René" — do not merge:</b>
+            <ul>
+              <li>René Meyer — Daeva · Carthian · Regent <em>(this one)</em></li>
+              <li>René St. Dominique — Ventrue · Invictus · Primogen</li>
+              <li>René — NPC, Conrad Sondergaard's rival</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel ref">
+          <div class="panel-head"><h3>Reference prelude</h3><span class="meta">always present</span></div>
+          <details open>
+            <summary>Glossary</summary>
+            <div class="refbody">
+              <p><b>"the Great Unwashed"</b> = unranked Kindred of the Court without title. <em>Not</em> the mortal masses.</p>
+              <p>Bloodline names (Mnemosyne, Zelani…) are <b>secret</b> — never public.</p>
+            </div>
+          </details>
+          <details open>
+            <summary>Channel rules — the Cacophony</summary>
+            <div class="refbody">
+              <p><span class="vis">Visible:</span> clan, covenant, public title, observable behaviour.</p>
+              <p><span class="invis">Invisible:</span> bloodline, devotions, haven specifics, Court-private matters.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Codified rules</summary>
+            <div class="refbody">
+              <p>Feeding pool = Attribute + Skill, Discipline allowed on top (Dominate is legal).</p>
+              <p>Animal-feeding capacity is set by Blood Potency, not clan.</p>
+            </div>
+          </details>
+          <div class="standing">Draft only from grounded facts and the submission. Where a fact is absent, say so — never invent it. Resolve identity via the Index, never by name.</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Roster</h3><span class="meta">30 in cycle</span></div>
+          <div class="panel-body">
+            <div class="roster">
+              <span class="chip active">René Meyer</span>
+              <span class="chip">Cazz</span><span class="chip">Etsy</span><span class="chip">Keeper</span>
+              <span class="chip">Doc</span><span class="chip">Mac</span><span class="chip">Brandy</span>
+              <span class="chip">Conrad</span><span class="chip">Anichka</span><span class="chip">Mammon</span>
+              <span class="chip">Reed</span><span class="chip">Eve</span><span class="chip">Cyrus</span><span class="chip">…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="note">Illustrative Phase-2 mockup only — this UI is not yet designed or built. Phase 1 ships as a CLI + a markdown drafting pack (no interface). Shell mirrors <code>public/admin.html</code> / <code>admin-layout.css</code> (sidebar + content + domain-header); styling uses the live Parchment design tokens (Cinzel / Lato / Libre Baskerville, crimson accent, dark-amber gold), light mode only.</p>
+  </main>
+
+</div>
+
+</body>
+</html>

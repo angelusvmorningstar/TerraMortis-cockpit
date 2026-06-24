@@ -1,0 +1,17 @@
+{
+  "name": "tm-cockpit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Terra Mortis ST Cockpit — Phase 1 grounding-pack generator (localhost, read-only sandbox). See specs/cockpit/.",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "generate": "node generate-pack.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "mongodb": "^7.1.1"
+  }
+}
