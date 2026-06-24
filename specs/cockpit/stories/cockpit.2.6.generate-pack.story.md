@@ -3,7 +3,7 @@ epic: 2
 story: 2.6
 story_key: cockpit.2.6.generate-pack
 title: The generate-pack CLI
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -18,7 +18,7 @@ inputs:
 
 # Story 2.6: The generate-pack CLI
 
-Status: review
+Status: done
 
 ## Story
 
@@ -100,8 +100,10 @@ main().catch((err) => { console.error(`generate-pack FAILED: ${err.message}`); p
 - kebab-case file, camelCase functions, British English. No new deps. No suite imports.
 - Reads only (sandbox via the read-only surface; chronicle reads); the only write is `out/drafting-pack.md` (local output). Never writes to either database.
 
-### Live run (the big one) — pending the sandbox seed
-This is the **full Phase-1 end-to-end**. It needs: a local Mongo running, a **seeded `tm_suite_dev`** (Story 1.3, the ST's one-time seed) and a **seeded `tm_chronicle`** (run the `seeds/*` from Stories 2.1 + 2.3). Until then the dev can `node --check generate-pack.mjs` and reason about the wiring, but the live `node generate-pack.mjs` (which produces a real `out/drafting-pack.md` from real data) is the **ST's end-to-end smoke after seeding**. Record live run pending. (Unlike the pure modules, this cannot be fully smoke-tested headless because `buildCharacterIndex` connects.)
+### Live run (the big one) — DONE 2026-06-24
+This is the **full Phase-1 end-to-end**. It needs: a local Mongo running, a **seeded `tm_suite_dev`** (Story 1.3, the ST's one-time seed) and a **seeded `tm_chronicle`** (run the `seeds/*` from Stories 2.1 + 2.3).
+
+**Executed 2026-06-24 — PASS.** Local MongoDB 8.3.4 installed (winget, service `Running`/auto, `127.0.0.1:27017`); `tm_chronicle` seeded (`glossary` 2, `cacophony_channels` 1, `chronicle_rules` 5, `disambiguations` 3); `tm_suite_dev` seeded read-only from prod (`characters` 39, `npcs` 48, `character_dossier` 30). `node generate-pack.mjs DT5` → **exit 0**, wrote `out/drafting-pack.md` (116 lines, 77,233 bytes) with all six sections present (Character Index → Glossary → Channel Rules → Codified Rules → Standing instruction) over real data; run summary: **36 characters, 6 collision groups, 3 curated notes**. Acceptance criteria empirically satisfied.
 
 ## Tasks / Subtasks
 
@@ -131,6 +133,7 @@ This is the **full Phase-1 end-to-end**. It needs: a local Mongo running, a **se
 
 ### Change Log
 - 2026-06-24: Added `generate-pack.mjs` — the cockpit CLI orchestrator (build index → collisions → assemble sections → serialise → write `out/drafting-pack.md` + stdout + run summary; fail-loud, output path relative to the script). Parse + import-resolution verified; live e2e pending the sandbox/chronicle seed. **Completes Epic 2 and the Phase 1 generator at code level.** Cockpit Story 2.6.
+- 2026-06-24: **Live end-to-end executed — PASS** (local Mongo installed + seeded; `generate-pack.mjs DT5` exit 0, real 77 KB pack, 36 characters / 6 collisions / 3 curated notes). Last acceptance gate cleared. Status `review → done`.
 
 ## QA Review (Quinn) — 2026-06-24
 
