@@ -3,7 +3,7 @@ epic: 3
 story: 3.1
 story_key: cockpit.3.1.validate-grounding
 title: Re-audit a grounded cycle and record the fabrication drop
-status: in-progress
+status: review
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 3.1: Re-audit a grounded cycle and record the fabrication drop
 
-Status: in-progress
+Status: review (rev 2 — QA blockers addressed; re-review requested)
 
 > SM-drafted 2026-06-24 (cockpit convention; not the suite `_bmad` flow). Ready for dev on Angelus's go. This is Epic 3 — the Phase 1 MVP success proof. The generator (Epics 1-2) is done and proven; this story takes the actual reading.
 
@@ -89,6 +89,38 @@ Re-draft the **already-audited material**, not a fresh live cycle. The audit *is
 - 2026-06-24: First blind trial — instance 4 (Astrid/Odeliese/Elise). Found + recorded the clean-input rule (raw `responses` only; strip `*_resolved`/`st_*`/`*_review`; never source from processed outcomes docs). Blind Opus drafter, pack-only, kept all three distinct and stated "Odeliese not in Elise". **Verdict: prevented.** Recorded in `epic-3-reaudit-results.md`. Running: 1 tested / 1 prevented.
 - 2026-06-24: Ran the remaining 12 instances (4 parallel blind Opus trials). All 13 named instances did not recur (10 prevented, 3 stated-the-gap) on one blind pass. Dev marked complete → `review`. Next: QA.
 - 2026-06-24: **QA (Quinn) — CHANGES REQUESTED.** Status `review → in-progress`. 4 blocking: blindness instruction-only not sandboxed; verbatim drafts not retained (grade unauditable); "after 0" overclaims; instance-13 verdict generous (→ 9 prevented / 4 gap). Non-blocking: softballed state-the-gap, undisclosed prompts, n=1. **NEW separate defect: NFR2 — pack leaks 18 haven addresses; raised as Story 2.7 (blocking, pack unsafe to paste as generated).** Results headline annotated as provisional/disputed. Rework pending user direction.
+- 2026-06-24: **Story 2.7 fixed first** (haven PII deny-list; pack regenerated clean). Re-audit rev 2 then run on the clean pack with all blockers addressed (see Dev Agent Record rev 2). Status `in-progress → review`; re-review requested.
+
+## Dev Agent Record — rev 2 (post-QA rework)
+
+### What was rebuilt
+- **Blockers 1+2 (structural blindness + retained drafts):** the PII-clean pack was
+  copied into an isolated scratchpad dir holding no audit and no outcomes docs. Each of 9
+  Opus drafters got only that one path + the raw input + the natural task; the audit was
+  unreachable. Every drafter ended with `FILES READ:` and **all nine reported the pack as
+  the sole file opened** (the tool-call evidence QA asked for). All nine drafts are
+  retained verbatim with the load-bearing line quoted in `epic-3-reaudit-drafts.md`.
+- **Blocker 3 (overclaim):** headline restated to "13/13 named instances did not recur;
+  9 prevented / 4 stated-the-gap; 0 fabricated", with the baseline "fifteen" called out
+  as an acknowledged under-count and the n=1 vs n=3 split disclosed.
+- **Blocker 4 (generous grades):** instance 13 → stated-the-gap; instance 1 → stated-the-
+  gap (partial) under strict grading. Tally now 9 prevented / 4 gap (matches QA).
+- **QA item 5 (hard mode):** instance 1 re-run with the tempting shared-haven datum in
+  the input + a texture-rewarding prompt. The drafter resisted the scene but still
+  inferred a heading from the haven — logged honestly as the one soft spot + a pack-text
+  fix (forbid haven→travel inference in the standing instruction).
+- **QA item 6 (disclose prompts):** the exact task framing per trial is described in
+  `epic-3-reaudit-drafts.md`; no prompt named a trap.
+- **QA item 7 (n):** 3 independent passes on the five identity/conflation traps (4, 9,
+  10, 11, 12); single-pass elsewhere, stated plainly as "prevented recurrence in a single
+  pass".
+
+### Result (rev 2)
+13/13 named instances did not recur. **9 prevented, 4 stated-the-gap, 0 fabricated.** The
+five most-cited identity/conflation traps held across 3 passes each. New pack-improvement
+findings (non-blocking): forbid haven→travel inference; add "Henry St. John" index alias;
+tidy the Charles clan-vs-bloodline collision wording; seed the real discipline-territory
+rows. Full record: `epic-3-reaudit-results.md`; verbatim drafts: `epic-3-reaudit-drafts.md`.
 
 ## QA Review (Quinn) — 2026-06-24
 
