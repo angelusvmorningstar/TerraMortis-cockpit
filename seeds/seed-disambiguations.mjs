@@ -25,8 +25,8 @@ const DISAMBIGUATIONS = [
   {
     key: 'astrid-odeliese-elise',
     names: ['Astrid', 'Odeliese', 'Elise'],
-    note: "Astrid (Conrad's dead wife) vs Odeliese (Keeper's dead wife, a decanted memory implanted in a living body) vs Elise (a clean living mortal who merely resembles Astrid). The Odeliese implant does NOT reside in the real Elise.",
-    source: 'hardening §2.A',
+    note: "Astrid (Conrad's dead wife) vs Odeliese (Keeper's dead wife, a decanted memory implanted in a living body) vs Elise (Conrad's living mortal granddaughter, who resembles his late wife Astrid; she is his touchstone). The Odeliese implant does NOT reside in the real Elise; Elise and Odeliese are different people.",
+    source: 'hardening §2.A; Elise=granddaughter confirmed from character touchstone data (DT4 live run 2026-06-24)',
   },
 ];
 
