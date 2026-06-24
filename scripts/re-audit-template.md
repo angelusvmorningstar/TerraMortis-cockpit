@@ -62,6 +62,20 @@ before (15) vs after.
 Instances 6, 8-12 (partially-verified in the audit) are scored if their originating
 input can be located; otherwise noted as not-re-run.
 
+## Clean-input rule (essential — found during the first trial)
+
+A downtime submission record carries BOTH the raw player input and ST-resolved
+fields. The blind drafter must receive ONLY the raw input, or the test is
+contaminated by the answer key:
+
+- **Use:** `responses.*` (and `_raw.submission`) — the verbatim player text.
+- **Strip:** `projects_resolved`, `merit_actions_resolved`, `acquisitions_resolved`,
+  `st_review`, `st_narrative`, `feeding_review`, and anything `*_resolved` / `st_*` /
+  `*_review`. These are post-hoc ST outcomes.
+- **Never source a blind input from a "Responses and Outcomes" / processed doc** — those
+  state the resolution (e.g. the DT3 outcomes doc literally contains the
+  Astrid/Odeliese/Elise clarification). Pull from the raw submission export instead.
+
 ## Inputs (confirmed present + readable, 2026-06-24)
 
 - Baseline: `Downtime_Hallucination_Audit.md` (repo root).

@@ -62,8 +62,8 @@ Re-draft the **already-audited material**, not a fresh live cycle. The audit *is
 
 - [x] Write `scripts/re-audit-template.md`: the method — blind-drafter / informed-grader design, scoring verdicts, per-instance test matrix, inputs, procedure, output (AC4). Done 2026-06-24.
 - [ ] Extract the audited instance set from `Downtime_Hallucination_Audit.md` with each instance's class + `grounding_that_would_prevent_it` as the scoring rubric.
-- [ ] For each instance, locate the original submission input in the confirmed source files and re-draft the relevant slot using only the generated pack as grounding.
-- [ ] Classify each re-draft: prevented / still-fabricated / correctly-stated-gap; separate "pack failed" from "pack lacks the field (Phase 2)" (AC1, AC3).
+- [~] For each instance, locate the original submission input in the confirmed source files and re-draft the relevant slot using only the generated pack as grounding. (Instance 4 done — blind Opus drafter, clean raw input.)
+- [~] Classify each re-draft: prevented / still-fabricated / correctly-stated-gap; separate "pack failed" from "pack lacks the field (Phase 2)" (AC1, AC3). (Instance 4 graded: prevented.)
 - [ ] Tally and record before/after against the baseline of fifteen in the results file (AC2, FR31/FR32).
 - [ ] Produce the `phase-2-scope-from-reaudit` list (retro action A3) — feeds Epic 4 planning.
 
@@ -80,7 +80,8 @@ _(pending dev)_
 
 ### Change Log
 - 2026-06-24: Story drafted (SM, cockpit convention). Critical-path prerequisite #1 (source inputs for DT1/3/4) confirmed present and text-readable. Awaiting dev go-ahead.
-- 2026-06-24: Dev started (status todo→in-progress). Verified pack coverage against the audit: instances 4/7/5/13 directly grounded (expect prevented), instances 1/3/2 lack the field (state-the-gap tests). Wrote `scripts/re-audit-template.md` with the blind-drafter/informed-grader design and per-instance matrix. Next: run the first blind-drafter trial.
+- 2026-06-24: Dev started (status todo→in-progress). Verified pack coverage against the audit: instances 4/7/5/13 directly grounded (expect prevented), instances 1/3/2 lack the field (state-the-gap tests). Wrote `scripts/re-audit-template.md` with the blind-drafter/informed-grader design and per-instance matrix.
+- 2026-06-24: First blind trial — instance 4 (Astrid/Odeliese/Elise). Found + recorded the clean-input rule (raw `responses` only; strip `*_resolved`/`st_*`/`*_review`; never source from processed outcomes docs). Blind Opus drafter, pack-only, kept all three distinct and stated "Odeliese not in Elise". **Verdict: prevented.** Recorded in `epic-3-reaudit-results.md`. Running: 1 tested / 1 prevented.
 
 ## QA Review
 _(pending — runs after dev per the loop: dev-story → QA → done)_
