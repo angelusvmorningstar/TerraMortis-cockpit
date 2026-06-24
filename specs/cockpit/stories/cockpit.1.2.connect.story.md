@@ -3,7 +3,7 @@ epic: 1
 story: 1.2
 story_key: cockpit.1.2.connect
 title: Single isolated data boundary (connect.mjs)
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -14,7 +14,7 @@ inputs:
 
 # Story 1.2: Single isolated data boundary (connect.mjs)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -101,6 +101,7 @@ The Mongo driver does not itself make a connection read-only (that would need a 
 - `lib/connect.mjs` (new)
 
 ### Change Log
+- 2026-06-24: Closed out (status review → done). Integration-validated by the Phase 1 live end-to-end run (Story 2.6): `generate-pack.mjs DT5` exercised this story’s code over real seeded data, exit 0. QA already on record.
 - 2026-06-24: Added `lib/connect.mjs`, the single isolated data boundary — two local MongoClients (sandbox read-only at the API surface; chronicle read/write), `assertLocalUri` loopback-only guard (FR3) that refuses any non-local host before connecting, and a runnable `verify`. Cockpit Story 1.2.
 
 ## QA Review (Quinn) — 2026-06-24

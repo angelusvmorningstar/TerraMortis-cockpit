@@ -3,7 +3,7 @@ epic: 2
 story: 2.1
 story_key: cockpit.2.1.seed-chronicle
 title: Seed the chronicle reference collections
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -16,7 +16,7 @@ inputs:
 
 # Story 2.1: Seed the chronicle reference collections
 
-Status: review
+Status: done
 
 ## Story
 
@@ -102,6 +102,7 @@ The audit's curated **identity-disambiguation notes** (Rene Meyer vs Rene St. Do
 - `seeds/seed-chronicle-rules.mjs` (new)
 
 ### Change Log
+- 2026-06-24: Closed out (status review → done). Integration-validated by the Phase 1 live end-to-end run (Story 2.6): `generate-pack.mjs DT5` exercised this story’s code over real seeded data, exit 0. QA already on record.
 - 2026-06-24: Added the three `tm_chronicle` reference seeds (glossary, cacophony_channels, chronicle_rules) with audit-sourced content, idempotent upserts via `connect.mjs`, and a flagged `discipline-territory-table` placeholder (real rows pending the feeding-matrix source). Parse-verified; live run pending local Mongo. Cockpit Story 2.1.
 
 ## QA Review (Quinn) — 2026-06-24

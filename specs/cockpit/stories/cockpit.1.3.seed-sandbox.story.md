@@ -3,7 +3,7 @@ epic: 1
 story: 1.3
 story_key: cockpit.1.3.seed-sandbox
 title: Seed the sandbox from production
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 1.3: Seed the sandbox from production
 
-Status: review
+Status: done
 
 ## Story
 
@@ -95,6 +95,7 @@ If a `scripts/seed-sandbox.mjs` helper is committed, it:
 - `.gitignore` (modified — added `_seed/`)
 
 ### Change Log
+- 2026-06-24: Closed out (status review → done). Integration-validated by the Phase 1 live end-to-end run (Story 2.6): `generate-pack.mjs DT5` exercised this story’s code over real seeded data, exit 0. QA already on record.
 - 2026-06-24: Added the sandbox-seed documentation (`scripts/seed-sandbox.md`) and a guarded node-driver export helper (`scripts/seed-sandbox.mjs`, read-only prod → local sandbox, `--confirm` + local-target guards); gitignored `_seed/`. Completes Epic 1. Cockpit Story 1.3.
 - 2026-06-24: Post-QA fix — target guard now checks **all** target hosts (`hostsOf`), closing a gap where a multi-host `SEED_TARGET_URI` with a remote member passed the first-host-only check.
 

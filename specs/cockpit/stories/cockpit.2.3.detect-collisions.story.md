@@ -3,7 +3,7 @@ epic: 2
 story: 2.3
 story_key: cockpit.2.3.detect-collisions
 title: Detect name collisions
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -16,7 +16,7 @@ inputs:
 
 # Story 2.3: Detect name collisions
 
-Status: review
+Status: done
 
 ## Story
 
@@ -97,6 +97,7 @@ Some conflations the forename match **cannot** catch:
 - `seeds/seed-disambiguations.mjs` (new)
 
 ### Change Log
+- 2026-06-24: Closed out (status review → done). Integration-validated by the Phase 1 live end-to-end run (Story 2.6): `generate-pack.mjs DT5` exercised this story’s code over real seeded data, exit 0. QA already on record.
 - 2026-06-24: Added `lib/detect-collisions.mjs` (pure forename-collision detector + curated-note merge) and `seeds/seed-disambiguations.mjs` (new `tm_chronicle.disambiguations` collection, three audit-sourced notes). Auto pass smoke-verified (three-Renés → 3 members; unique → none); seed live run pending Mongo. Resolves the Story 2.1 disambiguation-home flag (new collection, ST-confirmed). Cockpit Story 2.3.
 
 ## QA Review (Quinn) — 2026-06-24

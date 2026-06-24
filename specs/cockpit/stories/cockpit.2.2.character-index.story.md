@@ -3,7 +3,7 @@ epic: 2
 story: 2.2
 story_key: cockpit.2.2.character-index
 title: Build the Character Index (projection)
-status: review
+status: done
 phase: 1
 repo: TerraMortis-cockpit
 inputs:
@@ -15,7 +15,7 @@ inputs:
 
 # Story 2.2: Build the Character Index (projection)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -115,6 +115,7 @@ Each dossier fact already carries `source` (e.g. "history") — surface it. The 
 - `lib/build-character-index.mjs` (new)
 
 ### Change Log
+- 2026-06-24: Closed out (status review → done). Integration-validated by the Phase 1 live end-to-end run (Story 2.6): `generate-pack.mjs DT5` exercised this story’s code over real seeded data, exit 0. QA already on record.
 - 2026-06-24: Added `lib/build-character-index.mjs` — the Character Index projection over `tm_suite_dev` (non-retired characters, left-join `character_dossier` + `npcs`), read-only via `sandboxCollection`, gap markers, reimplemented displayName, parallel all-NPC list for collision detection. Parse-verified; live run pending seeded sandbox. Cockpit Story 2.2.
 
 ## QA Review (Quinn) — 2026-06-24
