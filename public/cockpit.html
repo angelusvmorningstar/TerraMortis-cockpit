@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Terra Mortis — ST Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@400;600;700;900&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* Parchment design tokens (subset from public/css/theme.css; light only) */
+:root{
+  --bg:#F4EFE4;--surf:#EDE7D8;--surf1:#E9E2D1;--surf2:#E5DEC9;--surf3:#DBD3BC;
+  --bdr:rgba(120,90,40,.20);--bdr2:rgba(120,90,40,.38);
+  --gold:#8B6010;--gold2:#7A5208;--gdim:#A07A20;
+  --gold-a6:rgba(120,90,40,.06);--gold-a8:rgba(120,90,40,.08);--gold-a12:rgba(120,90,40,.12);--gold-a30:rgba(120,90,40,.30);
+  --crim:#7A0000;--crim-hover:#A00000;--crim-active:#6B0000;--crim-a8:rgba(122,0,0,.08);--crim-a25:rgba(122,0,0,.25);--crim-a40:rgba(122,0,0,.40);
+  --accent:var(--crim);--accent-a40:var(--crim-a40);
+  --txt:#1C1410;--txt2:#4A3A28;--txt3:#6A5238;--label-tertiary:#8a7060;
+  --fh:'Cinzel',serif;--fl:'Lato',sans-serif;--ft:'Libre Baskerville',serif;
+  --rp-surf:#FFF8EE;--rp-txt:#2A1F14;--rp-txt3:#7A6A50;--rp-bdr:rgba(139,0,0,.12);
+  --warn-orange:#8b3d00;--warn-orange-bg:rgba(139,61,0,.10);--warn-orange-bdr:rgba(139,61,0,.40);
+  --green:#1E6A1E;--txt-on-dark:#F4EFE4;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{background:var(--bg);color:var(--txt);font-family:var(--ft);font-size:14px;line-height:1.55;
+  background-image:radial-gradient(rgba(120,90,40,.03) 1px,transparent 1px);background-size:4px 4px;}
+#app{display:flex;min-height:100vh;}
+#sidebar{width:clamp(180px,16vw,220px);flex-shrink:0;height:100vh;position:sticky;top:0;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid var(--bdr);}
+.sidebar-title{font-family:var(--fh);font-size:18px;font-weight:900;color:var(--accent);letter-spacing:1px;}
+.sidebar-sub{font-family:var(--fl);font-size:13px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+.sidebar-nav{display:flex;flex-direction:column;padding:12px 0;}
+.sidebar-secn{font-family:var(--fl);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--label-tertiary);padding:14px 20px 5px;}
+.sidebar-btn{background:none;border:none;color:var(--txt2);font-family:var(--fl);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-align:left;padding:12px 20px;cursor:pointer;border-left:3px solid transparent;}
+.sidebar-btn:hover{background:var(--surf2);color:var(--txt);}
+.sidebar-btn.on{color:var(--accent);border-left-color:var(--accent);background:var(--surf2);}
+.sidebar-btn.future{color:var(--label-tertiary);font-weight:400;cursor:default;}
+.sidebar-btn.future:hover{background:none;color:var(--label-tertiary);}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--bdr);padding:14px 20px;}
+.sandbox-chip{display:flex;align-items:center;gap:7px;font-family:var(--fl);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--green);}
+.sandbox-chip .led{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(30,106,30,.15);}
+.sidebar-foot small{display:block;color:var(--txt3);font-size:10px;font-style:italic;margin-top:4px;}
+#content{flex:1;padding:32px clamp(16px,2.5vw,40px);overflow-y:auto;min-width:0;}
+.domain-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
+.domain-header h2{font-family:var(--fl);font-size:22px;color:var(--accent);font-weight:600;margin:0;}
+.domain-count{font-family:var(--fl);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label-tertiary);}
+.btn-sm{font-size:12px;padding:5px 13px;background:var(--crim);color:var(--txt-on-dark);border:1px solid var(--crim-active);border-radius:4px;cursor:pointer;font-family:var(--fl);font-weight:700;margin-left:auto;}
+.btn-sm:hover{background:var(--crim-hover);}
+.btn-sm[disabled]{opacity:.5;cursor:wait;}
+.entry{background:var(--surf1);border:1px solid var(--bdr);border-radius:8px;padding:13px 16px;margin-bottom:10px;}
+.entry .name{font-family:var(--fh);font-weight:700;font-size:1.05rem;color:var(--txt);}
+.entry .legal{font-family:var(--ft);font-weight:400;font-size:.9rem;color:var(--txt3);font-style:italic;}
+.entry .traits{margin-top:3px;}
+.tag{display:inline-block;font-family:var(--fl);font-size:.64rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:11px;border:1px solid var(--bdr2);background:var(--gold-a8);color:var(--gold2);margin:3px 5px 0 0;}
+.tag.none{background:none;color:var(--label-tertiary);border-color:var(--bdr);}
+.entry details{margin-top:9px;}
+.entry summary{cursor:pointer;font-family:var(--fl);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold2);}
+.facts{margin-top:8px;display:flex;flex-direction:column;gap:5px;}
+.fact{font-size:.84rem;color:var(--rp-txt);}
+.fact .k{font-family:var(--fl);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--rp-txt3);margin-right:6px;}
+.fact .prov{font-size:.66rem;color:var(--rp-txt3);font-style:italic;}
+.warn-collide{margin:14px 0;padding:11px 14px;background:var(--crim-a8);border:1px solid var(--crim-a25);border-left:3px solid var(--crim);border-radius:6px;font-size:.84rem;color:var(--crim);}
+.warn-collide b{font-family:var(--fh);}
+.warn-collide ul{margin:6px 0 0;padding-left:18px;color:var(--txt2);}
+.refrow{background:var(--surf1);border:1px solid var(--bdr);border-radius:8px;padding:12px 16px;margin-bottom:9px;}
+.refrow .rt{font-family:var(--fh);font-weight:600;color:var(--gold2);font-size:.95rem;}
+.refrow .rb{margin-top:4px;color:var(--txt2);}
+.vis{color:var(--green);font-weight:700;}.invis{color:var(--crim);font-weight:700;}
+pre.raw{background:var(--rp-surf);border:1px solid var(--rp-bdr);border-radius:8px;padding:16px 18px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--rp-txt);line-height:1.5;}
+.loading{color:var(--txt3);font-style:italic;padding:20px 0;}
+.err{color:var(--crim);background:var(--crim-a8);border:1px solid var(--crim-a25);border-radius:6px;padding:12px 14px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Terra Mortis</div>
+      <div class="sidebar-sub">ST Cockpit</div>
+    </div>
+    <div class="sidebar-nav" id="nav">
+      <button class="sidebar-btn on" data-view="index">Character Index</button>
+      <button class="sidebar-btn" data-view="glossary">Glossary</button>
+      <button class="sidebar-btn" data-view="channel">Channel Rules</button>
+      <button class="sidebar-btn" data-view="rules">Codified Rules</button>
+      <button class="sidebar-btn" data-view="pack">Raw Pack</button>
+      <div class="sidebar-secn">Future (Epic 4+)</div>
+      <button class="sidebar-btn future">Draft workspace</button>
+      <button class="sidebar-btn future">Re-audit</button>
+      <button class="sidebar-btn future">Living City</button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="sandbox-chip"><span class="led"></span>Sandbox &middot; tm_suite_dev</div>
+      <small>read-only &middot; no production access</small>
+    </div>
+  </nav>
+  <main id="content">
+    <div class="domain-header">
+      <h2 id="view-title">Character Index</h2>
+      <span class="domain-count" id="view-count"></span>
+      <button class="btn-sm" id="regen">&#x27F3; Regenerate</button>
+    </div>
+    <div id="view"><div class="loading">Loading the pack from the sandbox…</div></div>
+  </main>
+</div>
+<script>
+let DATA = null;
+let VIEW = 'index';
+const esc = (s) => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+async function load() {
+  const btn = document.getElementById('regen');
+  btn.disabled = true; btn.textContent = '… loading';
+  document.getElementById('view').innerHTML = '<div class="loading">Loading the pack from the sandbox…</div>';
+  try {
+    const r = await fetch('/api/pack-data?label=DT5');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+    render();
+  } catch (e) {
+    document.getElementById('view').innerHTML = '<div class="err">Could not load pack data: ' + esc(e.message) + '<br>Is the local Mongo sandbox running?</div>';
+  } finally {
+    btn.disabled = false; btn.innerHTML = '&#x27F3; Regenerate';
+  }
+}
+
+function trait(v, label){ const none = !v || v === '[none on record]'; return '<span class="tag'+(none?' none':'')+'">'+esc(none?(label+': none'):v)+'</span>'; }
+
+function renderIndex() {
+  const chars = (DATA.index.characters || []).slice().sort((a,b)=>String(a.sortName||a.displayName).localeCompare(String(b.sortName||b.displayName)));
+  let h = '';
+  for (const c of chars) {
+    const aka = c.legalName && c.legalName !== c.sortName ? ' <span class="legal">(' + esc(c.legalName) + ')</span>' : '';
+    h += '<div class="entry"><div class="name">' + esc(c.displayName) + aka + '</div><div class="traits">'
+      + trait(c.clan,'clan') + trait(c.covenant,'covenant') + trait(c.bloodline,'bloodline') + trait(c.courtTitle,'title') + '</div>';
+    const facts = c.dossierFacts || [];
+    if (facts.length) {
+      h += '<details><summary>' + facts.length + ' grounded facts</summary><div class="facts">';
+      for (const f of facts) h += '<div class="fact"><span class="k">' + esc(f.tag) + '</span>' + esc(f.value) + ' <span class="prov">(' + esc(f.source) + ')</span></div>';
+      h += '</div></details>';
+    }
+    h += '</div>';
+  }
+  const groups = (DATA.collisions.collisions || []), curated = (DATA.collisions.curated || []);
+  if (groups.length || curated.length) {
+    h += '<div class="warn-collide"><b>&#9888; Name collisions &mdash; do not merge</b><ul>';
+    for (const g of groups) h += '<li>"' + esc(g.forename) + '" &mdash; ' + g.members.map(m=>esc(m.displayName)+' ('+esc(m.disambiguator)+')').join('; ') + '</li>';
+    for (const d of curated) h += '<li>' + esc((d.names||[]).join(' / ')) + ': ' + esc(d.note) + '</li>';
+    h += '</ul></div>';
+  }
+  return h;
+}
+
+function renderGlossary(){ const s=DATA.glossary; if(s.gap) return '<div class="refrow">'+esc(s.gap)+'</div>';
+  return (s.entries||[]).map(e=>'<div class="refrow"><span class="rt">'+esc(e.term)+'</span><div class="rb">'+esc(e.definition)+'</div></div>').join(''); }
+function renderChannel(){ const s=DATA.channelRules; if(s.gap) return '<div class="refrow">'+esc(s.gap)+'</div>';
+  return (s.channels||[]).map(c=>'<div class="refrow"><span class="rt">'+esc(c.channel)+'</span><div class="rb"><span class="vis">Visible:</span> '+esc((c.visible||[]).join(', '))+'<br><span class="invis">Invisible:</span> '+esc((c.invisible||[]).join(', '))+'</div></div>').join(''); }
+function renderRules(){ const s=DATA.rules; if(s.gap) return '<div class="refrow">'+esc(s.gap)+'</div>';
+  return (s.rules||[]).map(r=>'<div class="refrow"><span class="rt">'+esc(r.title)+'</span><div class="rb">'+esc(r.body)+'</div></div>').join(''); }
+function renderPack(){ return '<pre class="raw">'+esc(DATA.markdown)+'</pre>'; }
+
+const TITLES = {index:'Character Index',glossary:'Glossary',channel:'Channel Rules',rules:'Codified Rules',pack:'Raw Pack'};
+function count() {
+  if(!DATA) return '';
+  if(VIEW==='index') return (DATA.index.characters||[]).length + ' characters';
+  if(VIEW==='glossary') return ((DATA.glossary.entries||[]).length||0) + ' terms';
+  if(VIEW==='channel') return ((DATA.channelRules.channels||[]).length||0) + ' channels';
+  if(VIEW==='rules') return ((DATA.rules.rules||[]).length||0) + ' rules';
+  if(VIEW==='pack') return (DATA.markdown||'').split('\n').length + ' lines';
+  return '';
+}
+function render() {
+  document.getElementById('view-title').textContent = (DATA?DATA.label+' · ':'') + TITLES[VIEW];
+  document.getElementById('view-count').textContent = count();
+  if(!DATA) return;
+  const fn = {index:renderIndex,glossary:renderGlossary,channel:renderChannel,rules:renderRules,pack:renderPack}[VIEW];
+  document.getElementById('view').innerHTML = fn();
+}
+
+document.getElementById('nav').addEventListener('click', (e) => {
+  const b = e.target.closest('.sidebar-btn'); if(!b || b.classList.contains('future') || !b.dataset.view) return;
+  document.querySelectorAll('#nav .sidebar-btn').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); VIEW = b.dataset.view; render();
+});
+document.getElementById('regen').addEventListener('click', load);
+load();
+</script>
+</body>
+</html>
